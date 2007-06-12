@@ -1,0 +1,50 @@
+-*-outline-*-
+
+* Add completion to query.py
+  for instance, runCommand should show completions from expanding
+  PATH, runSSH should show completions from known_hosts
+
+* Add floating frames
+  ** code to handle floating frames has already been written, it is just currently dead code.
+     one can swith to using a floating frame on startup by switching:
+        self.current_frame = self.frame = TabbedFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
+     to 
+        self.current_frame = self.frame = FloatingFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
+
+  ** need to decide how to integrate floting frames.  here are some options:
+    *** make a "floating frame" tab in the tab bar which contains all the floating windows
+    *** make a "floating workspace" containing nothing but the floating frame
+
+* Figure out why we're not getting ButtonPress events in the client area
+  ** were getting ButtonPress events in the client border, just not in the client window itself
+  
+  Actually we get them in some instances, if you, for instance create
+  an xmessage, we get the ButtonPress events in all of the client area
+  except for the text area containing the message.
+
+  This is probably due to my not actually knowing what I'm doing.
+
+* I want shift+super+{h,j,k,l} to 'throw' windows into other frames like shift+super+{h,l} do in wmii-3
+
+* Saved layouts
+
+* Need to move the fonts / colors to .Xresources
+
+* Statusbar / dock
+  If we just allow the user to specify a static area on the screen
+  which isn't used by frames, the user can reuse functionality from
+  other docs/panels such as gnome_panel
+
+* Dragging tabs to other workspaces
+  When you start dragging a tab, the hit a key to switch to another
+  workspace, you should be able to drop the tab on that workspace.  It
+  seems like currently, when you are dragging, workspace switching
+  keys are ignored.
+
+* Get menus working
+
+* fullscreen current window
+  hit a key and make the current window zoom to fullscreen, hit the
+  same key to restore the previous layout
+
+* xinerama support

@@ -1,0 +1,16 @@
+;; Object bin/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "bin/"
+  :tables (list 
+   (semanticdb-table "tritium"
+    :major-mode 'python-mode
+    :tags '(("sys" include nil nil [952 962]) ("plwm" include nil nil [964 1062]) ("logging" include nil nil [1069 1083]) ("tritium" include nil nil [1084 1098]) ("sys" include nil nil [1099 1112]) ("tritium" include nil nil [1113 1159]) ("tritium.query" include nil nil [1160 1187]) ("tritium.submap" include nil nil [1188 1221]) ("Xlib" include nil nil [1222 1241]) ("log" variable nil nil [1244 1269]) ("TritiumMenuHandler" type (:superclasses ("menu.MenuCharHandler") :members (("Any_Escape" variable nil (reparse-symbol indented_block_body) [1323 1368]) ("Any_Return" variable nil (reparse-symbol indented_block_body) [1373 1409]) ("Any_space" variable nil (reparse-symbol indented_block_body) [1414 1468]) ("Any_BackSpace" variable nil (reparse-symbol indented_block_body) [1473 1527])) :type "class") nil [1271 1528]) ("TritiumClient" type (:superclasses ("wmanager.Client" "border.BorderClient" "workspace.WorkspaceClient" "tritium.title.TitleClient" "tritium.frame.FrameClient") :members (("\"Put the clients in a frame, with a border.\"" code nil (reparse-symbol indented_block_body) [1703 1747]) ("border_default_width" variable nil (reparse-symbol indented_block_body) [1753 1777]) ("border_color_name" variable nil (reparse-symbol indented_block_body) [1782 1809]) ("border_focuscolor_name" variable nil (reparse-symbol indented_block_body) [1814 1846])) :type "class") nil [1529 1847]) ("TritiumScreen" type (:superclasses ("wmanager.Screen" "color.Color" "message.screenMessage" "tritium.tritiumScreen" "menu.screenMenu" "tritium.title.TitleScreen") :members (("\"And panes on the screen, and I'm going to want some menus.\"" code nil (reparse-symbol indented_block_body) [2029 2089]) ("menu_handler" variable nil (reparse-symbol indented_block_body) [2095 2128]) ("menu_bordercolor" variable nil (reparse-symbol indented_block_body) [2133 2157]) ("message_bordercolor" variable nil (reparse-symbol indented_block_body) [2162 2190])) :type "class") nil [1848 2191]) ("TritiumConfig" type (:members (("__wm_init__" function (:arguments (("self" variable nil (reparse-symbol function_parameters) [2235 2239]))) (reparse-symbol indented_block_body) [2218 3229])) :type "class") nil [2193 3229]) ("Tritium" type (:superclasses ("wmanager.WindowManager" "focus.SloppyFocus" "font.Font" "tritium.tritiumWindowManager" "inspect.InspectServer" "TritiumConfig") :members (("client_class" variable nil (reparse-symbol indented_block_body) [3458 3486]) ("screen_class" variable nil (reparse-symbol indented_block_body) [3491 3519])) :type "class") nil [3240 3520]) ("if" code nil nil [3521 3798]))
+    :file "tritium"
+    :pointmax 3798
+    :unmatched-syntax 'nil
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )

@@ -1,0 +1,4 @@
+
+tritium packages for debian unstable are [not yet] avilable from tritium.vireo.org.
+
+On other systems, run "python setup.py install" to install tritium.

@@ -1,0 +1,87 @@
+# -*-python-*-
+
+class TritiumKeys(keys.KeyHandler):
+    class CtrlJ( SubMap ):
+        def Any_c( self, event ):
+            self.wm.current_frame().screen.system( "x-terminal-emulator &")
+
+        def Any_n( self, event ):
+            self.wm.current_frame().next()
+
+        def Any_p( self, event ):
+            self.wm.current_frame().prev()
+
+	def k( self, event ):
+            self.wm.current_frame().windows.current().close()
+
+	def C_k( self, event ):
+            self.wm.current_frame().windows.current().close()
+
+	def S_k( self, event ):
+            self.wm.current_frame().windows.current().kill()
+
+        def Any_x( self, event ):
+            log.debug( "remove_split????" )
+            self.wm.current_frame().remove_split()
+            log.debug( "after unsplit command: " + str( self.wm.workspaces.current() ) )
+
+        def _1( self, event ):
+            self.wm.current_frame().set_current( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_1 )
+
+        Any_1 = Any_2 = Any_3 = Any_4 = Any_5 = Any_6 = Any_7 = Any_9 = _1 
+
+    class NoKeys( keys.KeyGrabKeyboard ):
+        F12 = keys.KeyGrabKeyboard._timeout
+
+    def F1( self, event ):
+        runMan( self.wm.current_frame() )
+    
+    def F2( self, event ):
+        self.wm.current_frame().screen.system( "x-terminal-emulator &")
+
+    def F3( self, event ):
+        runCommand( self.wm.current_frame() )
+
+    def S_F3( self, event ):
+        runCommandInXterm( self.wm.current_frame() )
+
+    def F4( self, event ):
+        runSSH( self.wm.current_frame() )
+
+    def F9( self, event ):
+        self.wm.new_workspace( self.wm.current_frame().screen )
+
+    def M4_F1( self, event ):
+        self.wm.set_current_workspace( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_F1 )
+
+    M4_F2 = M4_F3 = M4_F4 = M4_F5 = M4_F6 = M4_F7 = M4_F8 = M4_F9 = M4_F1
+
+    def M4_n( self, event ):
+        self.wm.current_frame().next()
+
+    def M4_p( self, event ):
+        self.wm.current_frame().prev()
+
+    def M4_s( self, event ):
+        self.wm.current_frame().split_vertically()
+        log.debug( "after split command: " + str( self.wm.workspaces.current() ) )
+
+    def M4_S_s( self, event ):
+        self.wm.current_frame().split_horizontally()
+        log.debug( "after split command: " + str( self.wm.workspaces.current() ) )
+
+    def M4_h( self, event ):
+        self.wm.current_frame().prev()
+
+    def M4_l( self, event ):
+        self.wm.current_frame().next()
+
+    def C_j( self, event ):
+        self.CtrlJ( self.wm, event.time )
+
+    def M4_Tab( self, event ):
+        self.wm.workspaces.current().next_frame()
+        
+    def F12( self, event ):
+        self.NoKeys( self.wm, event.time )
+        

@@ -1,0 +1,126 @@
+#!/usr/bin/python
+# -*-python-*-
+#
+# tritium.py -- a keyboard driven window manager
+#
+# Copyright 2007 Mike O'Connor <stew@vireo.org>
+#
+# Portions of code plagarized from plwm's panes.py which is
+#    Copyright (C) 2001  Mike Meyer <mwm@mired.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+import sys
+
+from plwm import wmanager, keys, inspect, \
+     border, color, font, menu, cfilter,outline, focus
+     
+import logging
+import tritium
+import sys,os
+from tritium import tabs,workspace,frame,title
+from tritium.query import *
+from tritium.submap import SubMap
+from Xlib import XK 
+
+log = logging.getLogger()
+
+
+class TritiumMenuHandler(menu.MenuCharHandler):
+    Any_Escape = C_g = menu.MenuKeyHandler._abort
+    Any_Return = menu.MenuKeyHandler._do
+    Any_space = Any_Down = C_n = menu.MenuKeyHandler._down
+    Any_BackSpace = Any_Up = C_p = menu.MenuKeyHandler._up
+
+class TritiumClient( wmanager.Client,
+		     border.BorderClient,
+		     workspace.WorkspaceClient,
+		     tritium.title.TitleClient,
+		     tritium.frame.FrameClient ):
+    "Put the clients in a frame, with a border."
+
+    border_default_width = 1
+    border_color_name = 'White'
+    border_focuscolor_name = 'White'
+
+class TritiumScreen( wmanager.Screen,
+		     color.Color,
+		     message.screenMessage,
+		     tritium.tritiumScreen,
+		     menu.screenMenu,
+		     tritium.title.TitleScreen):
+    "And panes on the screen, and I'm going to want some menus."
+
+    menu_handler = TritiumMenuHandler
+    menu_bordercolor = "Red"
+    message_bordercolor = "Blue"
+
+
+class TritiumConfig:
+    def __wm_init__( self ):
+        "install the tritium key map"
+
+        found = False
+	config_files = [ os.path.join( os.getenv('HOME'), ".config/tritium/config" ),
+                         os.path.join( os.getenv('HOME'), ".tritium" ),
+                         "/usr/local/etc/tritium/config",
+                         "/usr/local/etc/X11/tritium/config",
+                         "/etc/tritium/config",
+                         "/etc/X11/tritium/config",
+                        ]
+
+        for config_file in config_files:
+            log.debug( "trying %s" %config_file )
+            if os.path.isfile( config_file ):
+                try:
+                    log.info( "loading config file: %s" % config_file )
+                    config = open( config_file )
+                    exec( config )
+                    found = True
+                    break
+                except:
+                    log.error( "error loading config file: %s: %s" % (config_file, sys.exc_info()[0] ))
+
+        TritiumKeys(self)
+
+        # TODO: this should be moved into a patch in debian/patches
+        menufile='/var/lib/tritium/debian-menu.py'
+        if os.path.isfile( menufile ):
+            try:
+                log.info( "loading menus from %s" % menufile )
+                menus = open( menufile )
+                exec menus in {'wm': self}
+            except:
+                log.error( "error loading menu file: %s: %s, %s" % (menufile, sys.exc_info()[0],sys.exc_info()[1] ))
+
+
+
+class Tritium( wmanager.WindowManager,
+               focus.SloppyFocus,
+               font.Font,
+               tritium.tritiumWindowManager,
+               inspect.InspectServer,
+               TritiumConfig ):
+    client_class = TritiumClient
+    screen_class = TritiumScreen
+
+if __name__ == '__main__':
+    os.environ[ "DISPLAY" ] = ":0"
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s %(message)s',
+                        stream = sys.stderr
+                        )
+
+    wmanager.main(Tritium)

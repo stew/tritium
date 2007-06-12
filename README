@@ -1,0 +1,17 @@
+tritium -- a tabbed/tiling window manager.
+
+tritium is a tiling/tabbed window manager for the X Window System
+inspired by the ion window manager.  It was written completely from
+scratch in python and shares no actual code with ion.
+
+tritium is implemented in python using the plwm ("pointless window
+manager") library, which is available here:
+ 	http://plwm.sourceforge.net
+
+please read INSTALL for installation instructions
+
+Configuration for tritium is by default in /etc/X11/tritium/config,
+you can override this by copying this file to $HOME/.tritium or
+$HOME/.config/tritium
+
+-- Mike O'Connor <stew@vireo.org>
