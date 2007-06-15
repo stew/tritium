@@ -94,33 +94,43 @@ class FrameClient:
             self.move( event.root_x - self.frame_drag_start_x ,
                        event.root_y - self.frame_drag_start_y )
 
+
+    # these functions are all hacky
     def move_left( self ):
         new_frame = self.frame.parent_frame.find_frame_left( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
-            self.frame = new_frame
-            self.frame.apend( self )
+            if( self.tab ):
+                self.frame.remove_tab( self.tab )
+            self.frame = new_repframe
+            self.frame.append( self )
            
     def move_right( self ):
         new_frame = self.frame.parent_frame.find_frame_right( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
+            if( self.tab ):
+                self.frame.remove_tab( self.tab )
             self.frame = new_frame
-            self.frame.apend( self )
+            self.frame.append( self )
             
     def move_up( self ):
         new_frame = self.frame.parent_frame.find_frame_above( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
+            if( self.tab ):
+                self.frame.remove_tab( self.tab )
             self.frame = new_frame
-            self.frame.apend( self )
+            self.frame.append( self )
 
     def move_down( self):
         new_frame = self.frame.parent_frame.find_frame_below( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
+            if( self.tab ):
+                self.frame.remove_tab( self.tab )
             self.frame = new_frame
-            self.frame.apend( self )
+            self.frame.append( self )
 
 class Frame:
     """
@@ -284,25 +294,25 @@ class SplitFrame( Frame ):
         if not self.vertical and self.frame1 == frame:
             return self.frame2
         else:
-            return self.parent.find_frame_to_right( self )
+            return self.parent_frame.find_frame_to_right( self )
 
     def find_frame_left( self, frame ):
         if not self.vertical and self.frame2 == frame:
             return self.frame1
         else:
-            return self.parent.find_frame_left( self )
+            return self.parent_frame.find_frame_left( self )
 
     def find_frame_above( self, frame ):
         if self.vertical and self.frame2 == frame:
             return self.frame1
         else:
-            return self.parent.find_frame_above( self )
+            return self.parent_frame.find_frame_above( self )
 
     def find_frame_below( self, frame ):
         if self.vertical and self.frame1 == frame:
             return self.frame2
         else:
-            return self.parent.find_frame_below( self )
+            return self.parent_frame.find_frame_below( self )
 
     def find_frame( self, x, y ):
         if ( self.x <= x ) and \

@@ -42,9 +42,13 @@
   keys are ignored.
 
 * Get menus working
+  we at least have a debian menu now when you hit f12
 
 * fullscreen current window
   hit a key and make the current window zoom to fullscreen, hit the
   same key to restore the previous layout
 
 * xinerama support
+
+* find application by name
+  I need to be able to hit 'C-j e' to switch to emacs or launch one if its not running

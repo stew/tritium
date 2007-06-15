@@ -77,3 +77,14 @@ class Workspace:
     def __str__( self ):
         return "Workspace: " + str( self.frame )
             
+    def find_frame_right( self, frame ):
+        self.screen.wm.set_current_workspace( self.screen.wm.workspaces.index + 1 )
+        return self.screen.wm.current_frame();
+
+    def find_frame_left( self, frame ):
+        self.screen.wm.set_current_workspace( self.screen.wm.workspaces.index - 1 )
+        return self.screen.wm.current_frame();
+
+    find_frame_above = find_frame_left
+    find_frame_below = find_frame_right
+
