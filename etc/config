@@ -31,22 +31,25 @@ class TritiumKeys(keys.KeyHandler):
         Any_1 = Any_2 = Any_3 = Any_4 = Any_5 = Any_6 = Any_7 = Any_9 = _1 
 
     class NoKeys( keys.KeyGrabKeyboard ):
-        F12 = keys.KeyGrabKeyboard._timeout
+        F11 = keys.KeyGrabKeyboard._timeout
 
     def F1( self, event ):
-        runMan( self.wm.current_frame() )
+        self.wm.runMan.query( self.wm.current_frame() )
     
     def F2( self, event ):
         self.wm.current_frame().screen.system( "x-terminal-emulator &")
 
     def F3( self, event ):
-        runCommand( self.wm.current_frame() )
+        self.wm.runCommand.query( self.wm.current_frame() )
+
+    def C_F3( self, event ):
+        self.wm.runPython.query( self.wm.current_frame() )
 
     def S_F3( self, event ):
-        runCommandInXterm( self.wm.current_frame() )
+        self.wm.runCommandInXterm.query( self.wm.current_frame() )
 
     def F4( self, event ):
-        runSSH( self.wm.current_frame() )
+        self.wm.runSSH.query( self.wm.current_frame() )
 
     def F9( self, event ):
         self.wm.new_workspace( self.wm.current_frame().screen )
@@ -79,9 +82,24 @@ class TritiumKeys(keys.KeyHandler):
     def C_j( self, event ):
         self.CtrlJ( self.wm, event.time )
 
+    def S_M4_h( self, event ):
+        self.wm.current_frame().windows.current().move_left()
+
+    def S_M4_l( self, event ):
+        self.wm.current_frame().windows.current().move_right()
+
+    def S_M4_j( self, event ):
+        self.wm.current_frame().windows.current().move_down()
+
+    def S_M4_k( self, event ):
+        self.wm.current_frame().windows.current().move_up()
+
     def M4_Tab( self, event ):
         self.wm.workspaces.current().next_frame()
         
-    def F12( self, event ):
+    def F11( self, event ):
         self.NoKeys( self.wm, event.time )
+
+    def F12( self, event ):
+        self.wm.Debian_menu()
         
