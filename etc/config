@@ -1,5 +1,26 @@
 # -*-python-*-
 
+"""
+ This class MUST be named "TritiumKeys" it will define the keybindings for tritium.
+
+ Binding a key is done by declaring a function with the name of the
+ keysym you are binding. A function named 'k' will be called when a
+ key event is received for the 'k' key.  Modifier keys can preceed the
+ keysym, separated by underscores (_).
+
+ s means shift
+ c means control
+ m means meta (modifier 1)
+ m1,m2,m3,m4,m5 mean Mod1,Mod2,Mod3,Mod4
+
+ The case and order of the modifiers is not important
+
+ Return
+ C_Right
+ C_M_F1
+
+"""
+
 class TritiumKeys(keys.KeyHandler):
     class CtrlJ( SubMap ):
         def Any_c( self, event ):
