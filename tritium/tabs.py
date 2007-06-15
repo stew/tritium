@@ -39,6 +39,23 @@ class Tabs:
 
         return len( self.tabs ) -1
         
+
+    # stew: you know better then to have both of these functions
+    # looking so similar, please refactor, thanks -stew
+    def next( self ):
+        if len( self.tabs ):
+            i = self._current_index()
+            current_tab = self.tabs[ i ]
+            i = (i + 1) % len( self.tabs )
+            self.tabs[ i ].activate_client()
+        
+    def prev( self ):
+        if len( self.tabs ):
+            i = self._current_index()
+            current_tab = self.tabs[ i ]
+            i = (i - 1) % len( self.tabs )
+            self.tabs[ i ].activate_client()
+        
     def append( self, tab ):
         self.tabs.insert( self._current_index()+1, tab )
         self.resize_tabs()

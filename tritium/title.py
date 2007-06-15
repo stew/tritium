@@ -215,15 +215,19 @@ class Tab:
         self.off_bg_gc = window.create_gc(foreground =
                                           self.frame.screen.tab_off_bg )
 
-    def tab_mouse_down( self, event ):
-        self.tab_dragging = True
+
+    def activate_client( self ):
 	self.client.raisewindow()
 	self.window.raisewindow()
         self.frame.wm.set_current_client( self.client )
+
+    def tab_mouse_down( self, event ):
+        self.tab_dragging = True
+        self.activate_client()
 	(x, y, width, height, borderwidth) = self.window.geometry()
         self.tab_drag_start_x = event.root_x - x
         self.tab_drag_start_y = event.root_y - y
-
+        
     def destroy( self ):
         self.window.destroy()
 

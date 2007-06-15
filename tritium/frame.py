@@ -102,7 +102,7 @@ class FrameClient:
             self.frame.remove( self )
             if( self.tab ):
                 self.frame.remove_tab( self.tab )
-            self.frame = new_repframe
+            self.frame = new_frame
             self.frame.append( self )
            
     def move_right( self ):
@@ -522,6 +522,18 @@ class TabbedFrame( Frame ):
         if self.parent_frame:
             self.parent_frame.remove_me( self )
             self.tabs.remove_all()
+
+
+    def next( self ):
+        "Move to the next window in this pane."
+        #clients = self.screen.query_clients(panefilter(self), 1)
+        self.tabs.next()
+
+    def prev( self ):
+        "Move to the next window in this pane."
+        #clients = self.screen.query_clients(panefilter(self), 1)
+        self.tabs.prev()
+
 
 def _test():
     import doctest
