@@ -1,4 +1,9 @@
--*-outline-*-
+-*- mode:outline;mode:auto-fill -*-
+
+* reparenting
+  we should be decorating both tabs and titlebars by reparenting
+  windows, right now we just crudely sticking new not related top
+  level windows onto the screen.
 
 * Add completion to query.py
   for instance, runCommand should show completions from expanding
@@ -22,7 +27,7 @@
   an xmessage, we get the ButtonPress events in all of the client area
   except for the text area containing the message.
 
-  This is probably due to my not actually knowing what I'm doing.
+  This might go away once we are properly reparenting
 
 * I want shift+super+{h,j,k,l} to 'throw' windows into other frames like shift+super+{h,l} do in wmii-3
 
@@ -51,4 +56,5 @@
 * xinerama support
 
 * find application by name
-  I need to be able to hit 'C-j e' to switch to emacs or launch one if its not running
+  ** I need to be able to hit 'C-j e' to switch to emacs or launch one if its not running
+  ** plpwm in the plwm examples has such a function  

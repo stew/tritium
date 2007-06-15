@@ -96,6 +96,7 @@ class FrameClient:
 
 
     # these functions are all hacky
+    # they should be refactored and combined
     def move_left( self ):
         new_frame = self.frame.parent_frame.find_frame_left( self.frame )
         if new_frame and self.frame != new_frame:
