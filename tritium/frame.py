@@ -26,8 +26,8 @@ floating, it might be fullscreen.
 from Xlib import X, Xutil, Xatom
 from plwm import wmanager, wmevents, modewindow, cfilter
 from cycle import Cycle
-from tabs import Tabs
-from title import Tab
+from tab import Tabs, Tab
+#from title import Tab
 import logging
 log = logging.getLogger()
 
@@ -36,6 +36,7 @@ class FrameClient:
     mixin for client windows that are contained in frames
     """
     def __client_init__( self ):
+        log.debug( "FrameClient.__client_init__" )
         self.frame_dragging = False
         frame = self.wm.current_frame()
 
@@ -45,59 +46,26 @@ class FrameClient:
                 frame = frame.next_frame()
 
         self.add_to_frame( frame )
-
-        self.dispatch.add_handler(X.MapNotify, self.frame_map)
-        self.dispatch.add_handler(X.UnmapNotify, self.frame_unmap)
-        self.dispatch.add_handler(X.DestroyNotify, self.frame_unmap)
-        self.dispatch.add_handler(wmevents.RemoveClient, self.frame_unmap)
         self.dispatch.add_handler(wmevents.ClientFocusIn, self.frame_get_focus)
-
-        if isinstance( frame, FloatingFrame ):
-            self.dispatch.add_system_handler( X.ButtonPress, self.frame_client_mouse_down )
-            self.dispatch.add_handler( X.ButtonRelease, self.frame_client_mouse_up ) 
-            self.dispatch.add_handler( X.MotionNotify, self.frame_client_drag )
-
-    def frame_map( self, event ):
-        self.dispatch.add_system_handler( X.ButtonPress, self.frame_client_mouse_down )
+#        raise( "foo" )
         
     def frame_unmap( self, event ):
-        log.debug( "STUSTUSTU: unmap: %s" %event )
+        log.debug( "frame_unmap" )
         self.frame.remove( self )
-        self.frame = None
 
     def frame_get_focus( self, event ):
+        log.debug( "frame_get_focus" )
         self.wm.workspaces.current().current_frame = self.frame
 
     def add_to_frame( self, frame ):
+        log.debug( "add_to_frame" )
         self.frame = frame
         frame.append( self )
-
-    def frame_client_mouse_down( self, event ):
-        log.debug( "frame_client_mouse_down: %s" %event )
-        if (event.detail == 1) and (event.state & X.Mod1Mask):
-            log.debug( "my event: %s" % event )
-            self.frame_dragging = True
-            (x, y, width, height, borderwidth) = self.geometry()
-            self.frame_drag_start_x = event.root_x - x
-            self.frame_drag_start_y = event.root_y - y
-        else:
-            log.debug( "not my event: %s" % event )
-
-    def frame_client_mouse_up( self, event ):
-        log.debug( "frame_client_mouse_up: %s" %event )
-        if event.detail == 1:
-            self.frame_dragging = False
-
-    def frame_client_drag( self, event ):
-        if self.frame_dragging:
-            log.debug( "frame_client_drag: event: %s" % (event) )
-            self.move( event.root_x - self.frame_drag_start_x ,
-                       event.root_y - self.frame_drag_start_y )
-
 
     # these functions are all hacky
     # they should be refactored and combined
     def move_left( self ):
+        log.debug( "move_left" )
         new_frame = self.frame.parent_frame.find_frame_left( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
@@ -107,6 +75,7 @@ class FrameClient:
             self.frame.append( self )
            
     def move_right( self ):
+        log.debug( "move_right" )
         new_frame = self.frame.parent_frame.find_frame_right( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
@@ -116,6 +85,7 @@ class FrameClient:
             self.frame.append( self )
             
     def move_up( self ):
+        log.debug( "move_up" )
         new_frame = self.frame.parent_frame.find_frame_above( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
@@ -125,6 +95,7 @@ class FrameClient:
             self.frame.append( self )
 
     def move_down( self):
+        log.debug( "move_down" )
         new_frame = self.frame.parent_frame.find_frame_below( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
@@ -138,6 +109,7 @@ class Frame:
     a container for [fullscreen] windows
     """
     def __init__( self, screen, x, y, width, height ):
+        log.debug( "Frame.__init__" )
         self.screen = screen
         self.x = x
         self.y = y
@@ -149,6 +121,7 @@ class Frame:
         self.windows = Cycle()
 
     def find_frame( self, x, y ):
+        log.debug( "find_frame" )
         if ( self.x <= x ) and \
            ( self.y <= y ) and \
            ((self.x+self.width) >= x ) and \
@@ -156,13 +129,15 @@ class Frame:
             return self
     
     def append( self, window ):
+        log.debug( "Frame.append" )
         self.place_window( window  )
         self.deactivate()
         self.windows.insert_after_current( window )
         self.activate()
 
     def remove( self, window ):
-        log.debug( "removing window: %s from frame %s" % (window,self))
+        log.debug( "Frame.remove" )
+        log.debug( "removing window: %s from frame %s with windows: %s" % (window,self,self.windows))
         cur = self.windows.current()
         self.windows.remove( window )
         if cur == window:
@@ -171,9 +146,12 @@ class Frame:
                 self.windows.prev()
                 self.activate()
 
+        window.frame = None
+
     def next( self ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
+        log.debug( "Frame.next" )
         self.deactivate()
         self.windows.next()
         self.activate()
@@ -181,6 +159,7 @@ class Frame:
     def prev( self ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
+        log.debug( "Frame.prev" )
         self.deactivate()
         self.windows.prev()
         self.activate()
@@ -188,11 +167,28 @@ class Frame:
     def set_current( self, index ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
+        log.debug( "Frame.set_current" )
         self.deactivate()
         self.windows.index = index
         self.activate()
 
+    def show( self ):
+        log.debug( "Frame.show" )
+        if not self.shown:
+            for window in self.windows:
+                window.show()
+
+            self.shown = True
+
+    def hide( self ):
+        log.debug( "Frame.hide" )
+#         if self.shown:
+#             for window in self.windows:
+#                 window.hide()
+#             self.shown = False
+
     def deactivate(self):
+        log.debug( "deactivate" )
         if self.windows.current() and not self.windows.current().withdrawn:
             #self.windows.current().panes_pointer_pos = self.windows.current().pointer_position()
             if self.wm.current_frame() == self:
@@ -202,6 +198,7 @@ class Frame:
         "Dummy function, reset to _activate after all windows are opened."
 
     def _activate(self):
+        log.debug( "Frame._activate" )
         "Activate whatever is currently self.windows.current()."
         self.wm.current_screen = self.screen
         if self.windows.current() and not self.windows.current().withdrawn:
@@ -211,30 +208,21 @@ class Frame:
             #if pos:
                 #self.windows.current().warppointer(pos[0], pos[1])
 
-    def show( self ):
-        if not self.shown:
-            for window in self.windows:
-                window.show()
-
-            self.shown = True
-
-    def hide( self ):
-        if self.shown:
-            for window in self.windows:
-                window.hide()
-            self.shown = False
 
     # dummy here.  will be overridden by TabbedFrame
     def remove_tab( self, tab ):
+        log.debug( "Frame.remove_tab" )
         pass
 
     def next_frame( self ):
+        log.debug( "Frame.next_frame" )
         if self.parent_frame:
             return self.parent_frame.next_sibling_frame( self )
         else:
             return self
 
     def first_child_frame( self ):
+        log.debug( "first_child_frame" )
         return self
 
 class SplitFrame( Frame ):
@@ -243,6 +231,7 @@ class SplitFrame( Frame ):
     horizontally. 
     """
     def __init__( self, screen, x, y, width, height, vertical, frame1 ):
+        log.debug( "SplitFrame.__init__" )
         Frame.__init__( self, screen, x, y, width, height )
         self.split_dragging = False
         self.vertical = vertical
@@ -264,7 +253,6 @@ class SplitFrame( Frame ):
             self.frame2 = TabbedFrame( self.screen, self.split+4, self.y,
                                        self.width-self.split-4, self.height)
 
-
         frame1.parent_frame.replace_me( frame1, self )
 
         self.frame1.parent_frame = self.frame2.parent_frame = self
@@ -273,6 +261,7 @@ class SplitFrame( Frame ):
         self.create_split_window()
 
     def moveresize( self, x, y, width, height ):
+        log.debug( "SplitFrame.moveresize" )
         self.x = x
         self.y = y
         self.width = width
@@ -292,30 +281,35 @@ class SplitFrame( Frame ):
         self.redraw( self )
 
     def find_frame_right( self, frame ):
+        log.debug( "SplitFrame.find_frame_right" )
         if not self.vertical and self.frame1 == frame:
             return self.frame2
         else:
             return self.parent_frame.find_frame_to_right( self )
 
     def find_frame_left( self, frame ):
+        log.debug( "SplitFrame.find_frame_left" )
         if not self.vertical and self.frame2 == frame:
             return self.frame1
         else:
             return self.parent_frame.find_frame_left( self )
 
     def find_frame_above( self, frame ):
+        log.debug( "SplitFrame.find_frame_above" )
         if self.vertical and self.frame2 == frame:
             return self.frame1
         else:
             return self.parent_frame.find_frame_above( self )
 
     def find_frame_below( self, frame ):
+        log.debug( "SplitFrame.find_frame_below" )
         if self.vertical and self.frame1 == frame:
             return self.frame2
         else:
             return self.parent_frame.find_frame_below( self )
 
     def find_frame( self, x, y ):
+        log.debug( "SplitFrame.find_frame" )
         if ( self.x <= x ) and \
            ( self.y <= y ) and \
            ((self.x+self.width) >= x ) and \
@@ -330,15 +324,18 @@ class SplitFrame( Frame ):
             return r
 
     def next_sibling_frame( self, frame ):
+        log.debug( "SplitFrame.next_sibling_frame" )
         if frame == self.frame1:
             return self.frame2.first_child_frame()
         else:
             return self.next_frame()
 
     def first_child_frame( self ):
+        log.debug( "SplitFrame.first_child_frame" )
         return self.frame1.first_child_frame()
 
     def create_split_window( self ):
+        log.debug( "SplitFrame.create_split_window" )
         
         if self.vertical:
             window = self.screen.root.create_window(
@@ -363,6 +360,7 @@ class SplitFrame( Frame ):
         self._create_gcs( window )
 
     def _create_gcs( self, window ):
+        log.debug( "SplitFrame._create_gcs" )
         self.split_gc1 = window.create_gc( foreground =
                                            self.screen.get_color( "#ffffff" ))
 
@@ -377,6 +375,7 @@ class SplitFrame( Frame ):
 
 
     def redraw( self, event = None ):
+        log.debug( "SplitFrame.redraw" )
         if self.vertical:
             self.window.fill_rectangle( self.split_gc1, self.x, 0, self.width, 1 )
             self.window.fill_rectangle( self.split_gc2, self.x, 1, self.width, 1 )
@@ -389,6 +388,7 @@ class SplitFrame( Frame ):
             self.window.fill_rectangle( self.split_gc4, 3, self.y, 1, self.height )
 
     def splitbar_mouse_down( self, event ):
+        log.debug( "SplitFrame.splitbar_mouse_down" )
         self.split_dragging = True
         if self.vertical:
             self.splitbar_drag_start = event.root_y - self.split
@@ -396,9 +396,11 @@ class SplitFrame( Frame ):
             self.splitbar_drag_start = event.root_x - self.split
 
     def splitbar_mouse_up( self, event ):
+        log.debug( "SplitFrame.splitbar_mouse_up" )
         self.split_dragging = False
         
     def splitbar_drag( self, event ):
+        log.debug( "SplitFrame.splitbar_drag" )
         if self.split_dragging:
             if self.vertical:
                 self.split = event.root_y - self.splitbar_drag_start
@@ -412,6 +414,7 @@ class SplitFrame( Frame ):
                 self.frame2.moveresize( self.split+4, self.y, self.width - self.split - 4, self.height )
 
     def remove_me( self, me ):
+        log.debug( "SplitFrame.remove_me" )
         if self.frame1 == me:
             with = self.frame2
         else:
@@ -425,6 +428,7 @@ class SplitFrame( Frame ):
         with.moveresize( self.x, self.y, self.width, self.height )
 
     def replace_me( self, me, with ):
+        log.debug( "SplitFrame.replace_me" )
         if self.frame1 == me:
             self.frame1 = with
         elif self.frame2 == me:
@@ -433,6 +437,7 @@ class SplitFrame( Frame ):
         with.parent_frame = self
 
     def __str__( self ):
+        log.debug( "SplitFrame.__str__" )
         if self.vertical:
             return "SplitFrame(%d,%d,%d,%d): top: <" %(self.x,self.y,self.width,self.height) + str( self.frame1 ) + "> bottom: <" + str( self.frame2 ) + ">"
         else:
@@ -444,47 +449,60 @@ class FloatingFrame( Frame ):
     """
     def place_window(self, window = None):
         "Figure out where the window should be put."
-
-        if not window: window = self.window
-        width, height = window.follow_size_hints(self.width - 2 * window.border_width,
-                                                 self.height - 2 * window.border_width)
-
-        # If it doesn't fit, just force it.
-        if width > self.width - 2 * window.border_width:
-            width = self.width - 2 * window.border_width
-        if height > self.height - ((4 * window.border_width) + self.screen.tab_height):
-            height = self.height - ((4 * window.border_width) + self.screen.tab_height)
-
-        x = self.x
-        y = self.y + self.screen.tab_height + (2*window.border_width)
-
-        x, y, width, height = window.keep_on_screen(x, y, width, height)
-
-        window.moveresize(x, y, width, height)
+        log.debug( "FloatingFrame.place_window" )
+        pass
 
     def append( self, window ):
-        tab = Tab( self, window )
-        window.tab = tab
+        log.debug( "FloatingFrame.append" )
+        window.title_manage()
         Frame.append( self, window )
-        tab.resize_title()
-        tab.set_text( window.get_title() )
+
+    def remove( self, window ):
+        log.debug( "FloatingFrame.remove" )
+        log.debug( "NOT removing window: %s from frame %s" % (window,self))
+        # this is doing nothing becuase during reparenting, we get an
+        # unmap event when we are being unmapped from the root window.
+        # probably here we should be doing SOMETHING when we get
+        # ummapped from the decorator window though.  (but that
+        # belongs in title.py, not here, i'm writing it here, becuase
+        # this is where I am right now, and it should be written down
+        
+    def show( self ):
+        log.debug( "Frame.show" )
+        if not self.shown:
+            for window in self.windows:
+                window.title_show()
+
+            self.shown = True
+
+    def hide( self ):
+        log.debug( "Frame.hide" )
+        if self.shown:
+            for window in self.windows:
+                window.title_hide()
+            self.shown = False
 
     def __str__( self ):
-        return "FloatingFrame(%d,%d,%d,%d):" %(self.x,self.y,self.width,self.height)
+         return "FloatingFrame(%d,%d,%d,%d):" %(self.x,self.y,self.width,self.height)
 
 class TabbedFrame( Frame ):
     def __init__( self, screen, x, y, width, height ):
+        log.debug( "TabbedFrame.__init__" )
         Frame.__init__( self, screen, x, y, width, height )
         self.tabs = Tabs( self )
 
     def append( self, window ):
+        log.debug( "TabbedFrame.append" )
         tab = Tab( self, window )
         window.tab = tab
         self.tabs.append( tab )
         tab.set_text( window.get_title() )
+        # shouldn't some of the stuff above be moved into tab_manage?
+        window.tab_manage()
         Frame.append( self, window )
 
     def moveresize( self, x, y, width, height ):
+        log.debug( "TabbedFrame.moveresize" )
         self.x = x
         self.y = y
         self.height = height
@@ -493,14 +511,26 @@ class TabbedFrame( Frame ):
         self.tabs.resize_tabs();
         
     def show( self ):
+        log.debug( "TabbedFrame.show" )
         Frame.show( self )
         self.tabs.show()
+        if not self.shown:
+            for window in self.windows:
+                window.show()
+
+            self.shown = True
 
     def hide( self ):
+        log.debug( "TabbedFrame.hide" )
         Frame.hide( self )
         self.tabs.hide()
+        if self.shown:
+            for window in self.windows:
+                window.hide()
+            self.shown = False
 
     def remove_tab( self, tab ):
+        log.debug( "TabbedFrame.remove_tab" )
         self.tabs.remove( tab )
 
     def __str__( self ):
@@ -510,16 +540,20 @@ class TabbedFrame( Frame ):
         """
         Figure out where the window should be put.
         """
+        log.debug( "TabbedFrame.place_window" )
         if not window: window = self.windows.current()
-        window.moveresize( self.x, self.y + self.screen.tab_height, self.width, self.height-self.screen.tab_height)
+        window.moveresize( self.x, self.y + self.screen.title_height, self.width, self.height-self.screen.title_height)
 
     def split_vertically( self ):
+        log.debug( "TabbedFrame.split_vertically" )
         SplitFrame( self.screen, self.x, self.y, self.width, self.height, True, self )
 
     def split_horizontally( self ):
+        log.debug( "TabbedFrame.split_horizontally" )
         SplitFrame( self.screen, self.x, self.y, self.width, self.height, False, self )
 
     def remove_split( self ):
+        log.debug( "TabbedFrame.remove_split" )
         if self.parent_frame:
             self.parent_frame.remove_me( self )
             self.tabs.remove_all()
@@ -528,11 +562,13 @@ class TabbedFrame( Frame ):
     def next( self ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
+        log.debug( "TabbedFrame.next" )
         self.tabs.next()
 
     def prev( self ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
+        log.debug( "TabbedFrame.prev" )
         self.tabs.prev()
 
 

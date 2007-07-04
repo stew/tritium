@@ -75,6 +75,9 @@ class TritiumKeys(keys.KeyHandler):
     def F9( self, event ):
         self.wm.new_workspace( self.wm.current_frame().screen )
 
+    def S_F9( self, event ):
+        self.wm.new_floating_workspace( self.wm.current_frame().screen )
+
     def M4_F1( self, event ):
         self.wm.set_current_workspace( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_F1 )
 

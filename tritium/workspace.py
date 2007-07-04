@@ -26,12 +26,14 @@ log = logging.getLogger()
 
 class WorkspaceClient:
     def __client_init__( self ):
+        log.debug( "WorkspaceClient.__client_init__" )
 	(x, y, width, height, borderwidth) = self.geometry()
         self.hide_x = x
         self.hide_y = y
         self.workspace = self.wm.workspaces.current()
 
     def hide( self ):
+        log.debug( "WorkspaceClient.hide" )
 	(x, y, width, height, borderwidth) = self.geometry()
         log.debug( "hiding %s" % self )
         self.hide_x = x
@@ -39,7 +41,7 @@ class WorkspaceClient:
         self.move( -(2*self.workspace.screen.root_width), -(2*self.workspace.screen.root_height) )
         
     def show( self ):
-        # [0] is wrong here
+        log.debug( "WorkspaceClient.show" )
         self.move( self.hide_x,self.hide_y )
         
 class WorkspaceScreen:
@@ -47,28 +49,38 @@ class WorkspaceScreen:
         pass
 
 class Workspace:
-    def __init__( self, screen ):
+    def __init__( self, screen, floating=False ):
+        log.debug( "Workspace.__init__" )
         self.screen = screen
-        self.current_frame = self.frame = TabbedFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
+        if floating:
+            self.current_frame = self.frame = FloatingFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
+        else:
+            self.current_frame = self.frame = TabbedFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
+
         self.current_frame.parent_frame = self
 
     def next_frame( self ):
+        log.debug( "Workspace.next_frame" )
         self.current_frame.deactivate()
         self.current_frame = self.current_frame.next_frame()
         self.current_frame.activate()
 
     def find_frame( self, x, y ):
+        log.debug( "Workspace.find_frame" )
         return self.frame.find_frame( x, y )
     
     def activate( self ):
+        log.debug( "Workspace.activate" )
         self.frame.show()
         self.frame.activate()
 
     def deactivate( self ):
+        log.debug( "Workspace.deactivate" )
         self.frame.deactivate()
         self.frame.hide()
 
     def replace_me( self, me, with ):
+        log.debug( "Workspace.replace_me" )
         assert( self.frame == me )
         self.frame = with
         self.frame.parent_frame = self
@@ -78,10 +90,12 @@ class Workspace:
         return "Workspace: " + str( self.frame )
             
     def find_frame_right( self, frame ):
+        log.debug( "Workspace.find_frame_right" )
         self.screen.wm.set_current_workspace( self.screen.wm.workspaces.index + 1 )
         return self.screen.wm.current_frame();
 
     def find_frame_left( self, frame ):
+        log.debug( "Workspace.find_frame_left" )
         self.screen.wm.set_current_workspace( self.screen.wm.workspaces.index - 1 )
         return self.screen.wm.current_frame();
 

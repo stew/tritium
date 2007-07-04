@@ -30,7 +30,7 @@ from plwm import wmanager, keys, inspect, \
 import logging
 import tritium
 import sys,os
-from tritium import tabs,workspace,frame,title
+from tritium import tab,workspace,frame,title
 from tritium.query import *
 from tritium.submap import SubMap
 from Xlib import XK 
@@ -48,6 +48,7 @@ class TritiumClient( wmanager.Client,
 		     border.BorderClient,
 		     workspace.WorkspaceClient,
 		     tritium.title.TitleClient,
+		     tritium.tab.TabClient,
 		     tritium.frame.FrameClient ):
     "Put the clients in a frame, with a border."
 
@@ -74,7 +75,7 @@ class TritiumConfig:
 
         found = False
 	config_files = [ os.path.join( os.getenv('HOME'), ".config/tritium/config" ),
-                         os.path.join( os.getenv('HOME'), ".tritium" ),
+                         os.path.join( os.getenv('HOME'), ".tritium" ), 
                          "/usr/local/etc/tritium/config",
                          "/usr/local/etc/X11/tritium/config",
                          "/etc/tritium/config",

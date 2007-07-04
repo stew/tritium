@@ -50,12 +50,15 @@ class tritiumScreen:
     "tritium mixin for Screens."
 
     def  __screen_client_init__( self ):
+        log.debug( "tritiumScreen. __screen_client_init__" )
         "Create the initial pane object for this screen."
         wmanager.debug( 'panesScreen', 'Initializing screen %d', self.number )
         self.dispatch.add_handler( X.ConfigureRequest, self.configure_frame )
+#        ws = self.wm.new_floating_workspace( self )
         ws = self.wm.new_workspace( self )
 
     def configure_frame( self, event ):
+        log.debug( "tritiumScreen.configure_frame" )
         w = self.get_window( event.window )
         if w:
             if event.value_mask & (X.CWX | X.CWY | X.CWWidth | X.CWHeight):
@@ -68,6 +71,7 @@ class tritiumScreen:
                     w.frame.place_window( w )
 
     def maximize_frame( self, frame ):
+        log.debug( "tritiumScreen.maximize_frame" )
         "Make the pane use the all the available screen."
 
         # todo, make root for a toolbar/statusbar?
@@ -81,11 +85,13 @@ class tritiumWindowManager:
     tritium window manager mixin
     """
     def __wm_screen_init__( self ):
+        log.debug( "tritiumWindowManager.__wm_screen_init__" )
         self.workspaces = Cycle()
 
     def __wm_init__( self ):
         "Enable activation, then activate the first pane."
         
+        log.debug( "tritiumWindowManager.__wm_init__" )
         self.runCommand = query.runCommand()
         self.runCommandInXterm = query.runCommandInXterm()
         self.runSSH = query.runSSH()
@@ -100,16 +106,26 @@ class tritiumWindowManager:
             workspace.activate()
 
     def current_frame( self ):
+        log.debug( "tritiumWindowManager.current_frame" )
         return self.workspaces.current().current_frame
 
     def set_current_workspace( self, index ):
+        log.debug( "tritiumWindowManager.set_current_workspace" )
         log.debug( "setting current workspace to %d" %index )
         self.workspaces.current().deactivate()
         self.workspaces.index = index
         self.workspaces.current().activate()
 
     def new_workspace( self, screen ):
+        log.debug( "tritiumWindowManager.new_workspace" )
         ws = Workspace( screen )
+        self.workspaces.append( ws )
+        self.set_current_workspace( len( self.workspaces ) - 1 )
+        return ws
+
+    def new_floating_workspace( self, screen ):
+        log.debug( "tritiumWindowManager.new_floating_workspace" )
+        ws = Workspace( screen, True )
         self.workspaces.append( ws )
         self.set_current_workspace( len( self.workspaces ) - 1 )
         return ws
