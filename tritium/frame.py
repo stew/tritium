@@ -47,7 +47,6 @@ class FrameClient:
 
         self.add_to_frame( frame )
         self.dispatch.add_handler(wmevents.ClientFocusIn, self.frame_get_focus)
-#        raise( "foo" )
         
     def frame_unmap( self, event ):
         log.debug( "frame_unmap" )
@@ -55,10 +54,12 @@ class FrameClient:
 
     def frame_get_focus( self, event ):
         log.debug( "frame_get_focus" )
+        log.debug( "setting current frame to %s" % self.frame )
         self.wm.workspaces.current().current_frame = self.frame
 
     def add_to_frame( self, frame ):
-        log.debug( "add_to_frame" )
+        log.debug( "FrameClient.add_to_frame" )
+        log.debug( "adding to frame: %s" % frame )
         self.frame = frame
         frame.append( self )
 
@@ -79,29 +80,34 @@ class FrameClient:
         new_frame = self.frame.parent_frame.find_frame_right( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
+            self.frame.deactivate()
             if( self.tab ):
                 self.frame.remove_tab( self.tab )
             self.frame = new_frame
             self.frame.append( self )
+            self.frame.activate()
             
     def move_up( self ):
         log.debug( "move_up" )
         new_frame = self.frame.parent_frame.find_frame_above( self.frame )
         if new_frame and self.frame != new_frame:
             self.frame.remove( self )
+            self.frame.deactivate()
             if( self.tab ):
                 self.frame.remove_tab( self.tab )
             self.frame = new_frame
             self.frame.append( self )
+            self.frame.activate()
 
     def move_down( self):
         log.debug( "move_down" )
         new_frame = self.frame.parent_frame.find_frame_below( self.frame )
         if new_frame and self.frame != new_frame:
+            log.debug( "moving from frame %s to frame %s" % ( self.frame, new_frame ) )
             self.frame.remove( self )
             if( self.tab ):
                 self.frame.remove_tab( self.tab )
-            self.frame = new_frame
+            self.add_to_frame( f )
             self.frame.append( self )
 
 class Frame:
@@ -134,6 +140,7 @@ class Frame:
         self.deactivate()
         self.windows.insert_after_current( window )
         self.activate()
+        window.frame = self
 
     def remove( self, window ):
         log.debug( "Frame.remove" )
@@ -201,13 +208,15 @@ class Frame:
         log.debug( "Frame._activate" )
         "Activate whatever is currently self.windows.current()."
         self.wm.current_screen = self.screen
+        self.wm.set_current_frame( self )
+        log.debug( "Frame._activate: setting current frame to %s in %s" % ( self, self.wm ) )
+
         if self.windows.current() and not self.windows.current().withdrawn:
             # Will raise window and give focus
             self.windows.current().activate()
             #pos = self.windows.current().panes_pointer_pos
             #if pos:
                 #self.windows.current().warppointer(pos[0], pos[1])
-
 
     # dummy here.  will be overridden by TabbedFrame
     def remove_tab( self, tab ):

@@ -256,6 +256,7 @@ class Tab:
         self.frame.wm.display.ungrab_pointer( X.CurrentTime )
         f = self.frame.wm.workspaces.current().find_frame( event.root_x, event.root_y )
         if f and (f != self.frame):
+            log.debug( "tab_mouse_up: moving tab to %s" % f )
             if isinstance( f, frame.TabbedFrame ):
                 self.frame.remove( self.client )
                 self.frame.remove_tab( self )

@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
 __distname__ = 'tritium'
-__version__ = '0.1'
+__version__ = '0.2'
 __description__ = 'a tabbed/tiling window manager'
 __long_description__ = \
 """
@@ -108,6 +108,13 @@ class tritiumWindowManager:
     def current_frame( self ):
         log.debug( "tritiumWindowManager.current_frame" )
         return self.workspaces.current().current_frame
+
+    def set_current_frame( self, frame ):
+        log.debug( "tritiumWindowManager.set_current_frame" )
+        if frame:
+            self.workspaces.current().current_frame = frame
+        else:
+            log.error( "wtf, set_current_frame got a null frame" )
 
     def set_current_workspace( self, index ):
         log.debug( "tritiumWindowManager.set_current_workspace" )
