@@ -10,6 +10,6 @@ tritium/cycle.py
 tritium/frame.py
 tritium/query.py
 tritium/submap.py
-tritium/tabs.py
+tritium/tab.py
 tritium/title.py
 tritium/workspace.py
