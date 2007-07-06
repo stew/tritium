@@ -107,16 +107,20 @@ class TritiumKeys(keys.KeyHandler):
         self.CtrlJ( self.wm, event.time )
 
     def S_M4_h( self, event ):
-        self.wm.current_frame().windows.current().move_left()
+        cw = self.wm.current_frame().windows.current()
+        cw.move_to_frame( cw.frame.parent_frame.find_frame_left( cw.frame ) )
 
     def S_M4_l( self, event ):
-        self.wm.current_frame().windows.current().move_right()
+        cw = self.wm.current_frame().windows.current()
+        cw.move_to_frame( cw.frame.parent_frame.find_frame_right( cw.frame ) )
 
     def S_M4_j( self, event ):
-        self.wm.current_frame().windows.current().move_down()
+        cw = self.wm.current_frame().windows.current()
+        cw.move_to_frame( cw.frame.parent_frame.find_frame_below( cw.frame ) )
 
     def S_M4_k( self, event ):
-        self.wm.current_frame().windows.current().move_up()
+        cw = self.wm.current_frame().windows.current()
+        cw.move_to_frame( cw.frame.parent_frame.find_frame_above( cw.frame ) )
 
     def M4_Tab( self, event ):
         self.wm.workspaces.current().next_frame()
