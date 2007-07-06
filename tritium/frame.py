@@ -63,52 +63,13 @@ class FrameClient:
         self.frame = frame
         frame.append( self )
 
-    # these functions are all hacky
-    # they should be refactored and combined
-    def move_left( self ):
-        log.debug( "move_left" )
-        new_frame = self.frame.parent_frame.find_frame_left( self.frame )
-        if new_frame and self.frame != new_frame:
-            self.frame.remove( self )
-            if( self.tab ):
-                self.frame.remove_tab( self.tab )
-            self.frame = new_frame
-            self.frame.append( self )
-           
-    def move_right( self ):
-        log.debug( "move_right" )
-        new_frame = self.frame.parent_frame.find_frame_right( self.frame )
-        if new_frame and self.frame != new_frame:
-            self.frame.remove( self )
-            self.frame.deactivate()
-            if( self.tab ):
-                self.frame.remove_tab( self.tab )
-            self.frame = new_frame
-            self.frame.append( self )
-            self.frame.activate()
-            
-    def move_up( self ):
-        log.debug( "move_up" )
-        new_frame = self.frame.parent_frame.find_frame_above( self.frame )
-        if new_frame and self.frame != new_frame:
-            self.frame.remove( self )
-            self.frame.deactivate()
-            if( self.tab ):
-                self.frame.remove_tab( self.tab )
-            self.frame = new_frame
-            self.frame.append( self )
-            self.frame.activate()
-
-    def move_down( self):
-        log.debug( "move_down" )
-        new_frame = self.frame.parent_frame.find_frame_below( self.frame )
+    def move_to_frame( self, new_frame ):
+        log.debug( "FrameClient.move_to_frame" )
         if new_frame and self.frame != new_frame:
             log.debug( "moving from frame %s to frame %s" % ( self.frame, new_frame ) )
+            self.tab_remove()
             self.frame.remove( self )
-            if( self.tab ):
-                self.frame.remove_tab( self.tab )
-            self.add_to_frame( f )
-            self.frame.append( self )
+            self.add_to_frame( new_frame )
 
 class Frame:
     """
@@ -217,11 +178,6 @@ class Frame:
             #pos = self.windows.current().panes_pointer_pos
             #if pos:
                 #self.windows.current().warppointer(pos[0], pos[1])
-
-    # dummy here.  will be overridden by TabbedFrame
-    def remove_tab( self, tab ):
-        log.debug( "Frame.remove_tab" )
-        pass
 
     def next_frame( self ):
         log.debug( "Frame.next_frame" )
@@ -537,10 +493,6 @@ class TabbedFrame( Frame ):
             for window in self.windows:
                 window.hide()
             self.shown = False
-
-    def remove_tab( self, tab ):
-        log.debug( "TabbedFrame.remove_tab" )
-        self.tabs.remove( tab )
 
     def __str__( self ):
         return "TabbedFrame(%d,%d,%d,%d):" %(self.x,self.y,self.width,self.height)

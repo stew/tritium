@@ -151,10 +151,11 @@ class TabClient:
         if isinstance( self.wm.current_frame(), frame.TabbedFrame ):
             self.tab.tab_deactivate()
 
-    def tab_remove(self, event):
+    def tab_remove(self, event=None):
         log.debug( "TabClient.tab_remove" )
         self.tab_unmanage()
         if self.tab:
+            self.frame.tabs.remove( self.tab )
             self.tab.tab_remove()
 
 
@@ -280,7 +281,6 @@ class Tab:
         log.debug( "tab_remove" )
         if self.window:
             self.window.destroy()
-        self.frame.remove_tab( self )
 
     def tab_activate( self ):
         log.debug( "tab_activate" )
