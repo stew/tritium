@@ -221,7 +221,7 @@ class SplitFrame( Frame ):
         frame1.parent_frame.replace_me( frame1, self )
 
         self.frame1.parent_frame = self.frame2.parent_frame = self
-        self.frame2.activate()
+        self.frame1.activate()
 
         self.create_split_window()
 

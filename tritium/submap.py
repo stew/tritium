@@ -32,23 +32,21 @@ class SubMap(keys.KeyGrabKeyboard):
 	# as the X event.time isn't synced with that)
 	self.last_key_time = time.time()
 
-	wmanager.debug('keys', '%s %d %d, keyhandler %s',
-		       event.__class__.__name__, event.detail, event.state, self)
+        log.debug('keys: %s %d %d, keyhandler %s' % (event.__class__.__name__, event.detail, event.state, self))
 
-	# Add in our release "modifier"
-	if event.type == X.KeyRelease:
-	    extrastate = keys.ReleaseModifier
-	else:
-	    extrastate = 0
+	if event.type != X.KeyPress:
+            return
 	
 	# First check for an exact modifier match
-	match = keys.hash_keycode(event.detail, event.state | extrastate)
+	match = keys.hash_keycode(event.detail, event.state)
+        log.debug( "haskey?" )
 	if self.bindings.has_key(match):
+            log.debug( "haskey" )
 	    self.bindings[match](event)
 
 	# else, check for an AnyModifier key
 	else:
-	    match = keys.hash_keycode(event.detail, X.AnyModifier | extrastate)
+	    match = keys.hash_keycode(event.detail, X.AnyModifier)
 	    if self.bindings.has_key(match):
 		self.bindings[match](event)
 

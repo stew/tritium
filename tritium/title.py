@@ -1,4 +1,4 @@
-# title.py -- floating windows
+# title.py -- floating windows with titlebars
 #
 # Copyright 2007 Mike O'Connor <stew@vireo.org>
 #
@@ -213,7 +213,7 @@ class TitleClient:
 
     def title_hide( self ):
         log.debug( "TitleClient.title_hide" )
-	(x, y, width, height, borderwidth) = self.title_window.geometry()
+	(x, y, width, height, borderwidth) = self.decoration_window.geometry()
         self.hide_x = x
         self.hide_y = y
         self.decoration_window.move( -(2*self.workspace.screen.root_width), -(2*self.workspace.screen.root_height) )
