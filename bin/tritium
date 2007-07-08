@@ -73,28 +73,17 @@ class TritiumConfig:
     def __wm_init__( self ):
         "install the tritium key map"
 
-        found = False
-	config_files = [ os.path.join( os.getenv('HOME'), ".config/tritium/config" ),
-                         os.path.join( os.getenv('HOME'), ".tritium" ), 
-                         "/usr/local/etc/tritium/config",
-                         "/usr/local/etc/X11/tritium/config",
-                         "/etc/tritium/config",
-                         "/etc/X11/tritium/config",
-                        ]
+        # the directories we searce for keys.py and layout.py in reverse order:
 
-        for config_file in config_files:
-            log.debug( "trying %s" %config_file )
-            if os.path.isfile( config_file ):
-                try:
-                    log.info( "loading config file: %s" % config_file )
-                    config = open( config_file )
-                    exec( config )
-                    found = True
-                    break
-                except:
-                    log.error( "error loading config file: %s: %s" % (config_file, sys.exc_info()[0] ))
+        sys.path.insert( 0, "/etc/X11/tritium/config" )
+        sys.path.insert( 0, "/etc/tritium/config" )
+        sys.path.insert( 0, "/usr/local/etc/X11/tritium/config" )
+        sys.path.insert( 0, "/usr/local/etc/tritium/config" )
+        sys.path.insert( 0, os.path.join( os.getenv('HOME'), ".tritium" ), )
+        sys.path.insert( 0, os.path.join( os.getenv('HOME'), ".config/tritium/config" ) )
 
-        TritiumKeys(self)
+        import keys
+        keys.TritiumKeys(self)
 
         # TODO: this should be moved into a patch in debian/patches
         menufile='/var/lib/tritium/debian-menu.py'
@@ -119,9 +108,20 @@ class Tritium( wmanager.WindowManager,
 
 if __name__ == '__main__':
     os.environ[ "DISPLAY" ] = ":0"
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(levelname)s %(message)s',
-                        stream = sys.stderr
-                        )
+
+    level=logging.INFO
+    # right now all we understand is -d for debug
+    if len( sys.argv ) > 1:
+        if( len( sys.argv ) == 2 ):
+            if sys.argv.pop() == '-d':
+                level=logging.DEBUG
+            else:
+                usage()
+        else:
+            usage()
+
+    logging.basicConfig( level=level,
+                         format='%(asctime)s %(levelname)s %(message)s',
+                         stream = sys.stderr )
 
     wmanager.main(Tritium)

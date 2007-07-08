@@ -34,6 +34,6 @@ setup( name             = tritium.__distname__,
        license          = tritium.__license__,
        packages         = ['tritium'],
        scripts          = ['bin/tritium'],
-       data_files       = [('/etc/X11/tritium', ['etc/config'])],
+       data_files       = [('/etc/X11/tritium', ['etc/keys.py'])],
        extra_objects    = ['README', 'INSTALL', 'TODO', 'doc']
 )

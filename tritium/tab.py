@@ -173,7 +173,7 @@ class Tab:
         self.hide_y = 0
 
     def create_tab_window( self, x ):
-        log.debug( "create_tab_window" )
+        log.debug( "Tab.create_tab_window" )
         
         if self.width:
             window = self.frame.screen.root.create_window(
@@ -193,19 +193,19 @@ class Tab:
             self._tab_create_gcs( window )
         
     def hide( self ):
-        log.debug( "hide" )
+        log.debug( "Tab.hide" )
 	(x, y, width, height, borderwidth) = self.window.geometry()
         self.hide_x = x
         self.hide_y = y
         self.window.move( -(2*self.client.workspace.screen.root_width), -(2*self.client.workspace.screen.root_height) )
 
     def show( self ):
-        log.debug( "show" )
+        log.debug( "Tab.show" )
         # [0] is wrong here
         self.window.move( self.hide_x,self.hide_y )
 
     def _tab_create_gcs( self, window ):
-        log.debug( "_tab_create_gcs" )
+        log.debug( "Tab._tab_create_gcs" )
         self.on_fg_gc = window.create_gc(foreground =
                                          self.frame.screen.title_on_fg,
                                          background =
@@ -228,13 +228,15 @@ class Tab:
 
 
     def activate_client( self ):
-        log.debug( "activate_client" )
+        log.debug( "Tab.activate_client" )
+	(x, y, width, height, borderwidth) = self.window.geometry()
+        log.debug( "raising clieng with geometry: (%d,%d,%d,%d) " % (x,y,width,height ))
 	self.client.raisewindow()
 	self.window.raisewindow()
         self.frame.wm.set_current_client( self.client )
 
     def tab_mouse_down( self, event ):
-        log.debug( "tab_mouse_down" )
+        log.debug( "Tab.tab_mouse_down" )
         self.tab_dragging = True
         self.window.dispatch.add_handler( X.ButtonRelease, self.tab_mouse_up ) 
         self.window.dispatch.add_handler( X.MotionNotify, self.tab_drag )        
@@ -248,54 +250,58 @@ class Tab:
         
 
     def destroy( self ):
-        log.debug( "Tab.destroy" )
+        log.debug( "Tab.Tab.destroy" )
         self.window.destroy()
 
     def tab_mouse_up( self, event ):
-        log.debug( "tab_mouse_up" )
-        self.tab_dragging = False
+        log.debug( "Tab.tab_mouse_up" )
         self.frame.wm.display.ungrab_pointer( X.CurrentTime )
-        f = self.frame.wm.workspaces.current().find_frame( event.root_x, event.root_y )
-        if f and (f != self.frame):
-            log.debug( "tab_mouse_up: moving tab to %s" % f )
-            if isinstance( f, frame.TabbedFrame ):
-                self.frame.remove( self.client )
-                self.frame.remove_tab( self )
-                self.client.add_to_frame( f )
-                self.window.destroy()
-            else:
-                f = self.frame
+        if self.tab_dragging:
+            self.tab_dragging = False
+            f = self.frame.wm.workspaces.current().find_frame( event.root_x, event.root_y )
+            if f and (f != self.frame):
+                log.debug( "tab_mouse_up: moving tab to %s" % f )
+                if isinstance( f, frame.TabbedFrame ):
 
-        if f:
-            f.tabs.resize_tabs()
-        else:
-            self.frame.tabs.resize_tabs()
+                    self.client.tab_remove()
+                    self.client.frame.remove( self.client )
+                    self.client.add_to_frame( f )
+
+
+                    self.window.destroy()
+                else:
+                    f = self.frame
+
+            if f:
+                f.tabs.resize_tabs()
+            else:
+                self.frame.tabs.resize_tabs()
         
     def tab_drag( self, event ):
-        log.debug( "tab_drag" )
+        log.debug( "Tab.tab_drag" )
         if self.tab_dragging:
             self.window.move( event.root_x - self.tab_drag_start_x ,
                               event.root_y - self.tab_drag_start_y )
 
     def tab_remove( self ):
-        log.debug( "tab_remove" )
+        log.debug( "Tab.tab_remove" )
         if self.window:
             self.window.destroy()
 
     def tab_activate( self ):
-        log.debug( "tab_activate" )
+        log.debug( "Tab.tab_activate" )
         if not self.active:
             self.active = True
             self.tab_draw()
 
     def tab_deactivate( self ):
-        log.debug( "tab_deactivate" )
+        log.debug( "Tab.tab_deactivate" )
         if self.active:
             self.active = False
             self.tab_draw()
 
     def resize_tab( self, x, width ):
-        log.debug( "resize_tab" )
+        log.debug( "Tab.resize_tab" )
         self.width = width
         if not self.window:
             self.create_tab_window( x )
@@ -303,7 +309,7 @@ class Tab:
             self.window.moveresize( x, self.frame.y,
                                     width, self.frame.screen.title_height)
     def set_text(self, text):
-        log.debug( "set_text" )
+        log.debug( "Tab.set_text" )
 	if text == self.text:
 	    return
 
@@ -312,7 +318,7 @@ class Tab:
         self.tab_draw()
 
     def tab_draw( self ):
-        log.debug( "tab_draw" )
+        log.debug( "Tab.tab_draw" )
 	if not self.text:
 	    return
 
@@ -335,9 +341,9 @@ class Tab:
 	self.window.draw_text( fg_gc, x, self.frame.screen.title_base, self.text )
 
     def tab_redraw(self, event):
-        log.debug( "tab_redraw" )
+        log.debug( "Tab.tab_redraw" )
         self.tab_draw()
 
     def tab_undraw(self):
-        log.debug( "tab_undraw" )
+        log.debug( "Tab.tab_undraw" )
         self.window.clear_area( width = self.width )

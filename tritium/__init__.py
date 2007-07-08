@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
 __distname__ = 'tritium'
-__version__ = '0.2.1'
+__version__ = '0.2.2~pre1'
 __description__ = 'a tabbed/tiling window manager'
 __long_description__ = \
 """

@@ -186,9 +186,16 @@ class Frame:
         else:
             return self
 
+
     def first_child_frame( self ):
         log.debug( "first_child_frame" )
         return self
+
+
+    def identity( self ):
+        return self
+
+    topmost_child = bottommost_child = leftmost_child = rightmost_child = identity
 
 class SplitFrame( Frame ):
     """
@@ -248,30 +255,42 @@ class SplitFrame( Frame ):
     def find_frame_right( self, frame ):
         log.debug( "SplitFrame.find_frame_right" )
         if not self.vertical and self.frame1 == frame:
-            return self.frame2
+            return self.frame2.leftmost_child()
         else:
-            return self.parent_frame.find_frame_to_right( self )
+            return self.parent_frame.find_frame_right( self )
 
     def find_frame_left( self, frame ):
         log.debug( "SplitFrame.find_frame_left" )
         if not self.vertical and self.frame2 == frame:
-            return self.frame1
+            return self.frame1.rightmost_child()
         else:
             return self.parent_frame.find_frame_left( self )
 
     def find_frame_above( self, frame ):
         log.debug( "SplitFrame.find_frame_above" )
         if self.vertical and self.frame2 == frame:
-            return self.frame1
+            return self.frame1.bottommost_child()
         else:
             return self.parent_frame.find_frame_above( self )
 
     def find_frame_below( self, frame ):
         log.debug( "SplitFrame.find_frame_below" )
         if self.vertical and self.frame1 == frame:
-            return self.frame2
+            return self.frame2.topmost_child()
         else:
             return self.parent_frame.find_frame_below( self )
+
+    # these four below could probably be made smarter at some point,
+    # like topmost could be topmost containing a certain x
+    def topmost_child( self ):
+        return self.frame1
+
+    def bottommost_child( self ):
+        return self.frame2
+
+    leftmost_child = topmost_child
+    rightmost_child = bottommost_child
+
 
     def find_frame( self, x, y ):
         log.debug( "SplitFrame.find_frame" )

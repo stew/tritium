@@ -72,7 +72,8 @@ class Workspace:
     def activate( self ):
         log.debug( "Workspace.activate" )
         self.frame.show()
-        self.frame.activate()
+        # TODO this should really be the last current window's frame
+        self.frame.topmost_child().activate()
 
     def deactivate( self ):
         log.debug( "Workspace.deactivate" )

@@ -1,5 +1,11 @@
 # -*-python-*-
 
+from Xlib import XK
+from plwm import keys
+from tritium.submap import SubMap
+import logging
+log = logging.getLogger()
+
 """
  This class MUST be named "TritiumKeys" it will define the keybindings for tritium.
 
@@ -104,6 +110,7 @@ class TritiumKeys(keys.KeyHandler):
         self.wm.current_frame().next()
 
     def C_j( self, event ):
+        log.debug( "ctr-j" )
         self.CtrlJ( self.wm, event.time )
 
     def S_M4_h( self, event ):

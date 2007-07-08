@@ -4,7 +4,7 @@ TODO
 setup.py
 bin/tritium
 docs/tritium.1
-etc/config
+etc/keys.py
 tritium/__init__.py
 tritium/cycle.py
 tritium/frame.py
