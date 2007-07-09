@@ -79,10 +79,10 @@ class TritiumKeys(keys.KeyHandler):
         self.wm.runSSH.query( self.wm.current_frame() )
 
     def F9( self, event ):
-        self.wm.new_workspace( self.wm.current_frame().screen )
+        self.wm.new_workspace( self.wm.current_frame().screen, False, "0" )
 
     def S_F9( self, event ):
-        self.wm.new_floating_workspace( self.wm.current_frame().screen )
+        self.wm.new_workspace( self.wm.current_frame().screen, True, "0" )
 
     def M4_F1( self, event ):
         self.wm.set_current_workspace( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_F1 )

@@ -24,6 +24,55 @@ from frame import FloatingFrame, TabbedFrame
 import logging
 log = logging.getLogger()
 
+class WorkspaceWindowManager:
+    """
+    window manager mixin for a wm with workspaces
+    """
+    def __wm_screen_init__( self ):
+        log.debug( "WorkspaceWindowManager.__wm_screen_init__" )
+        self.workspaces = Cycle()
+        self.workspaceDict = {}
+
+    def __wm_init__( self ):
+        log.debug( "WorkspaceWindowManager.__wm_init__" )
+        workspace = self.workspaces.current()
+        if workspace:
+            workspace.activate()
+
+
+    def current_frame( self ):
+        log.debug( "WorkspaceWindowManager.current_frame" )
+        ws = self.workspaces.current()
+        if ws:
+            return ws.current_frame
+
+    def set_current_frame( self, frame ):
+        log.debug( "tritiumWindowManager.set_current_frame" )
+        if frame:
+            self.workspaces.current().current_frame = frame
+        else:
+            log.error( "wtf, set_current_frame got a null frame" )
+
+    def set_current_workspace( self, index ):
+        log.debug( "tritiumWindowManager.set_current_workspace" )
+        log.debug( "setting current workspace to %d" %index )
+        self.workspaces.current().deactivate()
+        self.workspaces.index = index
+        self.workspaces.current().activate()
+
+    def new_workspace( self, screen, floating=False, name="" ):
+        log.debug( "tritiumWindowManager.new_workspace" )
+        try:
+            (ws,index) = self.workspaceDict[ name ]
+        except KeyError:
+            ws = Workspace( screen, floating, name )
+            self.workspaceDict[ name ] = ws
+            self.workspaces.append( ws )
+            index = len( self.workspaces ) - 1
+
+        self.set_current_workspace( index )
+        return ws
+
 class WorkspaceClient:
     def __client_init__( self ):
         log.debug( "WorkspaceClient.__client_init__" )
@@ -49,8 +98,9 @@ class WorkspaceScreen:
         pass
 
 class Workspace:
-    def __init__( self, screen, floating=False ):
+    def __init__( self, screen, floating=False, name="" ):
         log.debug( "Workspace.__init__" )
+        self.name = name
         self.screen = screen
         if floating:
             self.current_frame = self.frame = FloatingFrame( self.screen, 0, 0, screen.root_width, screen.root_height )

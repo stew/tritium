@@ -46,18 +46,29 @@ class TritiumMenuHandler(menu.MenuCharHandler):
 
 class TritiumClient( wmanager.Client,
 		     border.BorderClient,
-		     workspace.WorkspaceClient,
 		     tritium.title.TitleClient,
 		     tritium.tab.TabClient,
-		     tritium.frame.FrameClient ):
+		     tritium.frame.FrameClient,
+		     workspace.WorkspaceClient,
+                     ):
     "Put the clients in a frame, with a border."
 
     border_default_width = 1
     border_color_name = 'White'
     border_focuscolor_name = 'White'
 
+class LayoutScreen:
+    def __screen_client_init__( self ):
+        import layout
+
+        method = "screen_%d" % self.number
+
+        if layout.TritiumLayout.__dict__.has_key( method ):
+            layout.TritiumLayout.__dict__[method]( self )
+
 class TritiumScreen( wmanager.Screen,
 		     color.Color,
+                     LayoutScreen,
 		     message.screenMessage,
 		     tritium.tritiumScreen,
 		     menu.screenMenu,
@@ -70,11 +81,9 @@ class TritiumScreen( wmanager.Screen,
 
 
 class TritiumConfig:
-    def __wm_init__( self ):
-        "install the tritium key map"
-
+    def __wm_screen_init__( self ):
+        log.debug( "TritiumConfig.__wm_screen_init__" )
         # the directories we searce for keys.py and layout.py in reverse order:
-
         sys.path.insert( 0, "/etc/X11/tritium/config" )
         sys.path.insert( 0, "/etc/tritium/config" )
         sys.path.insert( 0, "/usr/local/etc/X11/tritium/config" )
@@ -82,8 +91,12 @@ class TritiumConfig:
         sys.path.insert( 0, os.path.join( os.getenv('HOME'), ".tritium" ), )
         sys.path.insert( 0, os.path.join( os.getenv('HOME'), ".config/tritium/config" ) )
 
+    def __wm_init__( self ):
+        "install the tritium key map"
+
         import keys
         keys.TritiumKeys(self)
+
 
         # TODO: this should be moved into a patch in debian/patches
         menufile='/var/lib/tritium/debian-menu.py'
@@ -100,9 +113,11 @@ class TritiumConfig:
 class Tritium( wmanager.WindowManager,
                focus.SloppyFocus,
                font.Font,
+               workspace.WorkspaceWindowManager,
+               TritiumConfig,
                tritium.tritiumWindowManager,
                inspect.InspectServer,
-               TritiumConfig ):
+               ):
     client_class = TritiumClient
     screen_class = TritiumScreen
 

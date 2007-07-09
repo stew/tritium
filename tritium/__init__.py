@@ -55,7 +55,7 @@ class tritiumScreen:
         wmanager.debug( 'panesScreen', 'Initializing screen %d', self.number )
         self.dispatch.add_handler( X.ConfigureRequest, self.configure_frame )
 #        ws = self.wm.new_floating_workspace( self )
-        ws = self.wm.new_workspace( self )
+#        ws = self.wm.new_workspace( self )
 
     def configure_frame( self, event ):
         log.debug( "tritiumScreen.configure_frame" )
@@ -84,10 +84,6 @@ class tritiumWindowManager:
     """
     tritium window manager mixin
     """
-    def __wm_screen_init__( self ):
-        log.debug( "tritiumWindowManager.__wm_screen_init__" )
-        self.workspaces = Cycle()
-
     def __wm_init__( self ):
         "Enable activation, then activate the first pane."
         
@@ -100,42 +96,6 @@ class tritiumWindowManager:
 
     #TODO: figure out what this is all about:
         Frame.activate = Frame._activate
-
-        workspace = self.workspaces.current()
-        if workspace:
-            workspace.activate()
-
-    def current_frame( self ):
-        log.debug( "tritiumWindowManager.current_frame" )
-        return self.workspaces.current().current_frame
-
-    def set_current_frame( self, frame ):
-        log.debug( "tritiumWindowManager.set_current_frame" )
-        if frame:
-            self.workspaces.current().current_frame = frame
-        else:
-            log.error( "wtf, set_current_frame got a null frame" )
-
-    def set_current_workspace( self, index ):
-        log.debug( "tritiumWindowManager.set_current_workspace" )
-        log.debug( "setting current workspace to %d" %index )
-        self.workspaces.current().deactivate()
-        self.workspaces.index = index
-        self.workspaces.current().activate()
-
-    def new_workspace( self, screen ):
-        log.debug( "tritiumWindowManager.new_workspace" )
-        ws = Workspace( screen )
-        self.workspaces.append( ws )
-        self.set_current_workspace( len( self.workspaces ) - 1 )
-        return ws
-
-    def new_floating_workspace( self, screen ):
-        log.debug( "tritiumWindowManager.new_floating_workspace" )
-        ws = Workspace( screen, True )
-        self.workspaces.append( ws )
-        self.set_current_workspace( len( self.workspaces ) - 1 )
-        return ws
 
     class appmenu:
         "Creates a menu of applications to run in a pane."
