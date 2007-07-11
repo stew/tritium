@@ -54,11 +54,13 @@ class WorkspaceWindowManager:
             log.error( "wtf, set_current_frame got a null frame" )
 
     def set_current_workspace( self, index ):
-        log.debug( "tritiumWindowManager.set_current_workspace" )
-        log.debug( "setting current workspace to %d" %index )
-        self.workspaces.current().deactivate()
-        self.workspaces.index = index
-        self.workspaces.current().activate()
+        log.debug( "tritiumWindowManager.set_current_workspace: %d" % index )
+        
+        if( index != self.workspaces.index and index >= 0 and index < len( self.workspaces ) ):
+            log.debug( "setting current workspace to %d" %index )
+            self.workspaces.current().deactivate()
+            self.workspaces.index = index
+            self.workspaces.current().activate()
 
     def new_workspace( self, screen, floating=False, name="" ):
         log.debug( "tritiumWindowManager.new_workspace" )
