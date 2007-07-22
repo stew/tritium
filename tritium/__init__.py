@@ -93,7 +93,7 @@ class tritiumWindowManager:
         self.runSSH = query.runSSH()
         self.runPython = query.runPython()
         self.runMan = query.runMan()
-
+        
     #TODO: figure out what this is all about:
         Frame.activate = Frame._activate
 

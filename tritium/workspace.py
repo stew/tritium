@@ -39,7 +39,6 @@ class WorkspaceWindowManager:
         if workspace:
             workspace.activate()
 
-
     def current_frame( self ):
         log.debug( "WorkspaceWindowManager.current_frame" )
         ws = self.workspaces.current()
@@ -62,6 +61,9 @@ class WorkspaceWindowManager:
             self.workspaces.index = index
             self.workspaces.current().activate()
 
+    def get_workspace_by_name( self, name ):
+        return self.workspaceDict[ name ]
+
     def new_workspace( self, screen, floating=False, name="" ):
         log.debug( "tritiumWindowManager.new_workspace" )
         try:
@@ -77,23 +79,29 @@ class WorkspaceWindowManager:
 
 class WorkspaceClient:
     def __client_init__( self ):
-        log.debug( "WorkspaceClient.__client_init__" )
+        log.debug( "WorkspaceClient.__client_init__: %s" % self )
 	(x, y, width, height, borderwidth) = self.geometry()
-        self.hide_x = x
-        self.hide_y = y
         self.workspace = self.wm.workspaces.current()
 
     def hide( self ):
-        log.debug( "WorkspaceClient.hide" )
-	(x, y, width, height, borderwidth) = self.geometry()
-        log.debug( "hiding %s" % self )
-        self.hide_x = x
-        self.hide_y = y
-        self.move( -(2*self.workspace.screen.root_width), -(2*self.workspace.screen.root_height) )
+        log.debug( "WorkspaceClient.hide: %s" % self )
+        if not self.hidden:
+            (x, y, width, height, borderwidth) = self.geometry()
+            log.debug( "hiding %s" % self )
+            self.hide_x = x
+            self.hide_y = y
+            new_x = self.screen.root_width+1
+            new_y = self.screen.root_height+1
+            log.debug( "moving %s from (%d, %d) to (%d, %d)" % (self.get_title(),x,y,new_x,new_y) )
+            self.move( new_x, new_y )
+            self.hidden = True
         
     def show( self ):
         log.debug( "WorkspaceClient.show" )
-        self.move( self.hide_x,self.hide_y )
+        if self.hidden:
+            log.debug( "moving %s back to (%d, %d)" % (self.get_title(), self.hide_x, self.hide_y) )
+            self.move( self.hide_x,self.hide_y )
+            self.hidden = False
         
 class WorkspaceScreen:
     def __screen_init__( self ):
@@ -104,12 +112,13 @@ class Workspace:
         log.debug( "Workspace.__init__" )
         self.name = name
         self.screen = screen
+        self.active = False
         if floating:
             self.current_frame = self.frame = FloatingFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
         else:
             self.current_frame = self.frame = TabbedFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
 
-        self.current_frame.parent_frame = self
+        self.current_frame.tritium_parent = self
 
     def next_frame( self ):
         log.debug( "Workspace.next_frame" )
@@ -121,14 +130,20 @@ class Workspace:
         log.debug( "Workspace.find_frame" )
         return self.frame.find_frame( x, y )
     
+    def visible( self ):
+        log.debug( "Workspace.visible: %s? %d" %(self.name, self.active))
+        return self.active
+
     def activate( self ):
         log.debug( "Workspace.activate" )
+        self.active = True
         self.frame.show()
         # TODO this should really be the last current window's frame
         self.frame.topmost_child().activate()
 
     def deactivate( self ):
         log.debug( "Workspace.deactivate" )
+        self.active = False
         self.frame.deactivate()
         self.frame.hide()
 
@@ -136,7 +151,7 @@ class Workspace:
         log.debug( "Workspace.replace_me" )
         assert( self.frame == me )
         self.frame = with
-        self.frame.parent_frame = self
+        self.frame.tritium_parent = self
         self.current_frame = self.frame.first_child_frame()
 
     def __str__( self ):

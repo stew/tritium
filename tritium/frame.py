@@ -27,26 +27,40 @@ from Xlib import X, Xutil, Xatom
 from plwm import wmanager, wmevents, modewindow, cfilter
 from cycle import Cycle
 from tab import Tabs, Tab
-#from title import Tab
+
 import logging
 log = logging.getLogger()
 
-class FrameClient:
+class FrameWindowManager:
+    def find_me_a_home( self, client ):
+        frame = client.screen.layout.which_frame( client )
+        if frame:
+            return frame
+        return self.current_frame()
+    
+
+class FrameClient( object ):
     """
     mixin for client windows that are contained in frames
+
+    inv:
+        self._check_frame_state()
+       
     """
     def __client_init__( self ):
         log.debug( "FrameClient.__client_init__" )
         self.frame_dragging = False
-        frame = self.wm.current_frame()
-
-        if frame.screen != self.screen:
-            frame = self.wm.current_frame()
-            while frame and frame.screen != self.screen:
-                frame = frame.next_frame()
-
+        frame = self.wm.find_me_a_home( self )
         self.add_to_frame( frame )
         self.dispatch.add_handler(wmevents.ClientFocusIn, self.frame_get_focus)
+
+    # moved this into its own function so I can allow for frame not
+    # yet being assigned
+    def _check_frame_state( self ):
+        try:
+            return self.__getattribute__( 'frame' ) != None
+        except:
+            return True
         
     def frame_unmap( self, event ):
         log.debug( "frame_unmap" )
@@ -84,7 +98,7 @@ class Frame:
         self.height = height
         self.wm = screen.wm
         self.shown = True
-        self.parent_frame = None
+        self.tritium_parent = None
         self.windows = Cycle()
 
     def find_frame( self, x, y ):
@@ -98,9 +112,14 @@ class Frame:
     def append( self, window ):
         log.debug( "Frame.append" )
         self.place_window( window  )
-        self.deactivate()
+        if self.visible():
+            self.deactivate()
+
         self.windows.insert_after_current( window )
-        self.activate()
+
+	if self.visible():
+            self.activate()
+
         window.frame = self
 
     def remove( self, window ):
@@ -114,7 +133,8 @@ class Frame:
                 self.windows.prev()
                 self.activate()
 
-        window.frame = None
+    def visible( self ):
+        return self.tritium_parent.visible()
 
     def next( self ):
         "Move to the next window in this pane."
@@ -181,8 +201,8 @@ class Frame:
 
     def next_frame( self ):
         log.debug( "Frame.next_frame" )
-        if self.parent_frame:
-            return self.parent_frame.next_sibling_frame( self )
+        if self.tritium_parent:
+            return self.tritium_parent.next_sibling_frame( self )
         else:
             return self
 
@@ -225,9 +245,9 @@ class SplitFrame( Frame ):
             self.frame2 = TabbedFrame( self.screen, self.split+4, self.y,
                                        self.width-self.split-4, self.height)
 
-        frame1.parent_frame.replace_me( frame1, self )
+        frame1.tritium_parent.replace_me( frame1, self )
 
-        self.frame1.parent_frame = self.frame2.parent_frame = self
+        self.frame1.tritium_parent = self.frame2.tritium_parent = self
         self.frame1.activate()
 
         self.create_split_window()
@@ -257,28 +277,28 @@ class SplitFrame( Frame ):
         if not self.vertical and self.frame1 == frame:
             return self.frame2.leftmost_child()
         else:
-            return self.parent_frame.find_frame_right( self )
+            return self.tritium_parent.find_frame_right( self )
 
     def find_frame_left( self, frame ):
         log.debug( "SplitFrame.find_frame_left" )
         if not self.vertical and self.frame2 == frame:
             return self.frame1.rightmost_child()
         else:
-            return self.parent_frame.find_frame_left( self )
+            return self.tritium_parent.find_frame_left( self )
 
     def find_frame_above( self, frame ):
         log.debug( "SplitFrame.find_frame_above" )
         if self.vertical and self.frame2 == frame:
             return self.frame1.bottommost_child()
         else:
-            return self.parent_frame.find_frame_above( self )
+            return self.tritium_parent.find_frame_above( self )
 
     def find_frame_below( self, frame ):
         log.debug( "SplitFrame.find_frame_below" )
         if self.vertical and self.frame1 == frame:
             return self.frame2.topmost_child()
         else:
-            return self.parent_frame.find_frame_below( self )
+            return self.tritium_parent.find_frame_below( self )
 
     # these four below could probably be made smarter at some point,
     # like topmost could be topmost containing a certain x
@@ -408,7 +428,7 @@ class SplitFrame( Frame ):
             client.add_to_frame( with )
 
         self.window.destroy()
-        self.parent_frame.replace_me( self, with )
+        self.tritium_parent.replace_me( self, with )
         with.moveresize( self.x, self.y, self.width, self.height )
 
     def replace_me( self, me, with ):
@@ -418,7 +438,7 @@ class SplitFrame( Frame ):
         elif self.frame2 == me:
             self.frame2 = with
 
-        with.parent_frame = self
+        with.tritium_parent = self
 
     def __str__( self ):
         log.debug( "SplitFrame.__str__" )
@@ -480,6 +500,8 @@ class TabbedFrame( Frame ):
         tab = Tab( self, window )
         window.tab = tab
         self.tabs.append( tab )
+        if not self.visible():
+            tab.hide()
         tab.set_text( window.get_title() )
         # shouldn't some of the stuff above be moved into tab_manage?
         window.tab_manage()
@@ -520,9 +542,12 @@ class TabbedFrame( Frame ):
         """
         Figure out where the window should be put.
         """
-        log.debug( "TabbedFrame.place_window" )
+        log.debug( "TabbedFrame.place_window: %s " % window.get_title() )
         if not window: window = self.windows.current()
         window.moveresize( self.x, self.y + self.screen.title_height, self.width, self.height-self.screen.title_height)
+        window.hidden = False # ugh, i don't like having to set it here, but this seems to be before __client_init__ is called
+        if not self.visible():
+            window.hide()
 
     def split_vertically( self ):
         log.debug( "TabbedFrame.split_vertically" )
@@ -534,8 +559,8 @@ class TabbedFrame( Frame ):
 
     def remove_split( self ):
         log.debug( "TabbedFrame.remove_split" )
-        if self.parent_frame:
-            self.parent_frame.remove_me( self )
+        if self.tritium_parent:
+            self.tritium_parent.remove_me( self )
             self.tabs.remove_all()
 
 

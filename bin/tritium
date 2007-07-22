@@ -60,11 +60,12 @@ class TritiumClient( wmanager.Client,
 class LayoutScreen:
     def __screen_client_init__( self ):
         import layout
+        self.layout = layout.TritiumLayout()
 
         method = "screen_%d" % self.number
 
         if layout.TritiumLayout.__dict__.has_key( method ):
-            layout.TritiumLayout.__dict__[method]( self )
+            layout.TritiumLayout.__dict__[method]( self.layout, self )
 
 class TritiumScreen( wmanager.Screen,
 		     color.Color,
@@ -114,6 +115,7 @@ class Tritium( wmanager.WindowManager,
                focus.SloppyFocus,
                font.Font,
                workspace.WorkspaceWindowManager,
+               frame.FrameWindowManager,
                TritiumConfig,
                tritium.tritiumWindowManager,
                inspect.InspectServer,
@@ -129,6 +131,8 @@ if __name__ == '__main__':
     if len( sys.argv ) > 1:
         if( len( sys.argv ) == 2 ):
             if sys.argv.pop() == '-d':
+                import contract
+                contract.checkmod(frame)
                 level=logging.DEBUG
             else:
                 usage()

@@ -130,7 +130,7 @@ class TitleClient:
         self.title_window.dispatch.add_handler( X.MotionNotify, self.titlebar_drag )
         self.title_window.dispatch.add_handler( X.ButtonRelease, self.titlebar_mouse_up )
 
-	self.dispatch.add_handler( X.PropertyNotify, self.modefocusedtitle_property_notify )
+	self.dispatch.add_handler( X.PropertyNotify, self.title_property_notify )
 
         self.title_window.dispatch.add_handler( X.Expose, self.title_redraw )
         self.decoration_window.dispatch.add_handler( wmevents.ClientFocusIn, self.title_get_focus )
@@ -168,7 +168,7 @@ class TitleClient:
         self.dispatch.remove_handler( self.titlebar_mouse_down )
         self.dispatch.remove_handler( self.titlebar_drag )
 
-	self.dispatch.remove_handler( self.modefocusedtitle_property_notify )
+	self.dispatch.remove_handler( self.title_property_notify )
         self.dispatch.remove_handler( self.title_remove )
         self.dispatch.remove_handler( self.title_remove )
 
@@ -188,13 +188,12 @@ class TitleClient:
         self.decoration_window = None
         
 
-    def modefocusedtitle_property_notify(self, event):
+    def title_property_notify(self, event):
         log.debug( "TitleClient.modefocusedtitle_property_notify" )
 	if self.current and event.atom == Xatom.WM_NAME:
             try:
                 self.set_text( self.get_title())
             except:
-                # should probably figure this one out
                 pass
 
     def title_get_focus(self, event):

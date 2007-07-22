@@ -39,7 +39,7 @@ class MyEditHandler(input.InputKeyHandler):
     Down = input.InputKeyHandler._history_down
     Left = input.InputKeyHandler._back
     Right = input.InputKeyHandler._forw
-
+    
 class query:
     "base class for queries"
     def __init__( self, prompt ):
@@ -49,7 +49,9 @@ class query:
     def query( self, frame ):
         self.system = frame.screen.system
         window = input.inputWindow( self.prompt, frame.screen, length = 64)
-        window.read( self, MyEditHandler, self.history, frame.x, frame.y )
+        x = frame.x + ( ( frame.width - window.width ) >> 1 )
+        y = (frame.height - frame.y)>>1
+        window.read( self, MyEditHandler, self.history, x, y )
 
     def __call__( self, string ):
         self.history.append( string )

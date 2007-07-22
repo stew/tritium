@@ -1,8 +1,16 @@
 -*- mode:outline;mode:auto-fill -*-
 
+note: MORE_TODO_ITEMS=$(grep -r TODO *)
+
 * Add completion to query.py
   for instance, runCommand should show completions from expanding
   PATH, runSSH should show completions from known_hosts
+
+* help screen
+  a way to pop up a window showing the current keybindings
+
+* Config reload
+  we really should have a way to reload the config files.
 
 * floating frames
   ** need to decide how to integrate floting frames.  here are some options:
@@ -10,6 +18,8 @@
     *** make a "floating workspace" containing nothing but the floating frame
 
 * Saved layouts
+  well we have the starts of a way to have predefined layouts in
+  ~/.tritium/layout.py, bot no way to save a layout yet
 
 * Need to move the fonts / colors to .Xresources
 
@@ -25,13 +35,17 @@
   keys are ignored.
 
 * Get menus working
-  we at least have a debian menu now when you hit f12
+  we at least have a debian menu now when you hit f12, but we should
+  have menus for stuff like "close window"
 
 * fullscreen current window
   hit a key and make the current window zoom to fullscreen, hit the
   same key to restore the previous layout
 
 * xinerama support
+  looking through the archives of the PLWM ml, it looks like support
+  for xinerama under plwm has been worked on, but afaik, no code has
+  yet been checked in.
 
 * find application by name
   ** I need to be able to hit 'C-j e' to switch to emacs or launch one if its not running

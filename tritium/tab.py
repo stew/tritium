@@ -113,7 +113,7 @@ class TabClient:
 
     def tab_manage( self ):
         log.debug( "tab_manage" )
-	self.dispatch.add_handler(X.PropertyNotify, self.modefocusedtitle_property_notify)
+	self.dispatch.add_handler(X.PropertyNotify, self.tab_property_notify)
         self.dispatch.add_handler(wmevents.ClientFocusIn, self.tab_get_focus)
         self.dispatch.add_handler(wmevents.ClientFocusOut, self.tab_lose_focus)
         self.dispatch.add_handler(wmevents.RemoveClient, self.tab_remove)
@@ -125,20 +125,19 @@ class TabClient:
     def tab_unmanage( self ):
         log.debug( "tab_unmanage" )
 
-	self.dispatch.remove_handler( self.modefocusedtitle_property_notify)
+	self.dispatch.remove_handler( self.tab_property_notify)
         self.dispatch.remove_handler( self.tab_get_focus)
         self.dispatch.remove_handler( self.tab_lose_focus)
         self.dispatch.remove_handler( self.tab_remove)
 
 
-    def modefocusedtitle_property_notify(self, event):
+    def tab_property_notify(self, event):
         log.debug( "TabClient.modefocusedtitle_property_notify" )
 
 	if self.current and event.atom == Xatom.WM_NAME:
             try:
                 self.tab.set_text( self.get_title())
             except:
-                # should probably figure this one out
                 pass
 
     def tab_get_focus(self, event):
@@ -172,6 +171,9 @@ class Tab:
         self.hide_x = 0
         self.hide_y = 0
 
+    def __str__( self ):
+        return( "Tab \"%s\"" % self.text )
+
     def create_tab_window( self, x ):
         log.debug( "Tab.create_tab_window" )
         
@@ -197,11 +199,14 @@ class Tab:
 	(x, y, width, height, borderwidth) = self.window.geometry()
         self.hide_x = x
         self.hide_y = y
-        self.window.move( -(2*self.client.workspace.screen.root_width), -(2*self.client.workspace.screen.root_height) )
+        new_x = self.client.screen.root_width + 1
+        new_y = self.client.screen.root_height + 1
+        log.debug( "moving %s from (%d, %d) to (%d, %d)" % (self,x,y,new_x,new_y) )
+        self.window.move( new_x, new_y )
 
     def show( self ):
         log.debug( "Tab.show" )
-        # [0] is wrong here
+        log.debug( "moving %s back to (%d, %d)" % (self,self.hide_x,self.hide_y) )
         self.window.move( self.hide_x,self.hide_y )
 
     def _tab_create_gcs( self, window ):

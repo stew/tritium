@@ -5,6 +5,7 @@ from plwm import keys
 from tritium.submap import SubMap
 import logging
 log = logging.getLogger()
+from tritium.identify import IdentifyWindow
 
 """
  This class MUST be named "TritiumKeys" it will define the keybindings for tritium.
@@ -38,19 +39,14 @@ class TritiumKeys(keys.KeyHandler):
         def Any_p( self, event ):
             self.wm.current_frame().prev()
 
-	def k( self, event ):
-            self.wm.current_frame().windows.current().close()
+	def Any_c( self, event ):
+            self.wm.current_frame().windows.current().delete()
 
-	def C_k( self, event ):
-            self.wm.current_frame().windows.current().close()
-
-	def S_k( self, event ):
-            self.wm.current_frame().windows.current().kill()
+	def Any_k( self, event ):
+            self.wm.current_frame().windows.current().destroy()
 
         def Any_x( self, event ):
-            log.debug( "remove_split????" )
             self.wm.current_frame().remove_split()
-            log.debug( "after unsplit command: " + str( self.wm.workspaces.current() ) )
 
         def _1( self, event ):
             self.wm.current_frame().set_current( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_1 )
@@ -58,6 +54,10 @@ class TritiumKeys(keys.KeyHandler):
         Any_1 = Any_2 = Any_3 = Any_4 = Any_5 = Any_6 = Any_7 = Any_9 = _1 
 
     class NoKeys( keys.KeyGrabKeyboard ):
+        """
+        Ungrab all keys except one so that the window manager 'gets
+        out of your way'.
+        """
         F11 = keys.KeyGrabKeyboard._timeout
 
     def F1( self, event ):
@@ -79,15 +79,18 @@ class TritiumKeys(keys.KeyHandler):
         self.wm.runSSH.query( self.wm.current_frame() )
 
     def F9( self, event ):
-        self.wm.new_workspace( self.wm.current_frame().screen, False, "0" )
+        self.wm.new_workspace( self.wm.current_frame().screen )
 
     def S_F9( self, event ):
-        self.wm.new_workspace( self.wm.current_frame().screen, True, "0" )
+        self.wm.new_workspace( self.wm.current_frame().screen, True )
 
     def M4_F1( self, event ):
         self.wm.set_current_workspace( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_F1 )
 
     M4_F2 = M4_F3 = M4_F4 = M4_F5 = M4_F6 = M4_F7 = M4_F8 = M4_F9 = M4_F1
+
+    def M4_w( self, event ):
+        self.wm.current_frame().windows.current().delete()
 
     def M4_n( self, event ):
         self.wm.current_frame().next()
@@ -113,27 +116,44 @@ class TritiumKeys(keys.KeyHandler):
         log.debug( "ctr-j" )
         self.CtrlJ( self.wm, event.time )
 
+    def M4_k( self, event ):
+        cw = self.wm.current_frame().windows.current()
+        cw.frame.tritium_parent.find_frame_above()
+	#TODO: finish this
+
     def S_M4_h( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.parent_frame.find_frame_left( cw.frame ) )
+        cw.move_to_frame( cw.frame.tritium_parent.find_frame_left( cw.frame ) )
 
     def S_M4_l( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.parent_frame.find_frame_right( cw.frame ) )
+        cw.move_to_frame( cw.frame.tritium_parent.find_frame_right( cw.frame ) )
 
     def S_M4_j( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.parent_frame.find_frame_below( cw.frame ) )
+        cw.move_to_frame( cw.frame.tritium_parent.find_frame_below( cw.frame ) )
 
     def S_M4_k( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.parent_frame.find_frame_above( cw.frame ) )
+        cw.move_to_frame( cw.frame.tritium_parent.find_frame_above( cw.frame ) )
 
     def M4_Tab( self, event ):
         self.wm.workspaces.current().next_frame()
-        
-    def F11( self, event ):
-        self.NoKeys( self.wm, event.time )
+
+    def M4_i( self, event ):
+        IdentifyWindow( self.wm.current_frame().windows.current(), event.time )
+
+#     def F11( self, event ):
+#         self.NoKeys( self.wm, event.time )
+
+    def F11(self, evt):
+	wmanager.debug('keys', 'dropping keygrabs temporarily')
+
+	# First release all our grabs.  They will be reinstalled
+	# when BypassHandler exits
+	
+	self._ungrab()
+	BypassHandler(self)
 
     def F12( self, event ):
         self.wm.Debian_menu()
