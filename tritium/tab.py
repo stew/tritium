@@ -111,6 +111,11 @@ class TabClient:
         log.debug( "TabClient.__client_init__" )
         pass
 
+    def __client_del__(self):
+        sellf.tab_remove()
+        log.debug( "TabClient.__client_del__" )
+        pass
+
     def tab_manage( self ):
         log.debug( "tab_manage" )
 	self.dispatch.add_handler(X.PropertyNotify, self.tab_property_notify)
