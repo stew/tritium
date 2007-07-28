@@ -27,6 +27,7 @@ from Xlib import X, Xutil, Xatom
 from plwm import wmanager, wmevents, modewindow, cfilter
 from cycle import Cycle
 from tab import Tabs, Tab
+import workspace
 
 import logging
 log = logging.getLogger()
@@ -81,6 +82,11 @@ class FrameClient( object ):
     def move_to_frame( self, new_frame ):
         log.debug( "FrameClient.move_to_frame" )
         if new_frame and self.frame != new_frame:
+            old_workspace = self.frame.workspace()
+            new_workspace = new_frame.workspace()
+            if new_workspace != old_workspace:
+                old_workspace.deactivate()
+                new_workspace.activate()
             log.debug( "moving from frame %s to frame %s" % ( self.frame, new_frame ) )
             self.tab_remove()
             self.frame.remove( self )
@@ -101,6 +107,13 @@ class Frame:
         self.shown = True
         self.tritium_parent = None
         self.windows = Cycle()
+
+    def workspace( self ):
+        "return the workspace this frame is part of"
+        if isinstance( self.tritium_parent, workspace.Workspace ):
+            return self.tritium_parent
+        else:
+            return self.tritium_parent.workspace()
 
     def find_frame( self, x, y ):
         log.debug( "find_frame" )
