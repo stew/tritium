@@ -97,10 +97,18 @@ class tritiumWindowManager:
     #TODO: figure out what this is all about:
         Frame.activate = Frame._activate
 
+    class actions_menu:
+        def __init__( self, client ):
+            width, height = client.screen.menu_make( [ 'close', client.delete ] )
+                    
+            pass
+        def __call__( self, choice ):
+            pass
+
     class appmenu:
         "Creates a menu of applications to run in a pane."
 
-        def __init__(self, wm, apps):
+        def __init__( self, wm, apps ):
             "Create and run the applications menu from the keys."
 
             frame = wm.current_frame()
@@ -110,9 +118,9 @@ class tritiumWindowManager:
             self.wm = wm
             self.system = frame.screen.system
             self.apps = apps
-            frame.screen.menu_run((frame.width - width) / 2 + frame.x,
-                             (frame.height - height) / 2 + frame.y,
-                             self)
+            frame.screen.menu_run( ( frame.width - width ) / 2 + frame.x,
+                                   ( frame.height - height ) / 2 + frame.y,
+                                   self )
 
         def __call__(self, choice):
             "Call the system function on the value of the given choice."

@@ -52,6 +52,11 @@ class Cycle:
         if len( self.items ):
             return self.items[ self.index ]
 
+    def set_current( self, obj ):
+        for self.index in range( len( self ) ):
+            if( self.current() == obj ):
+                return
+
     def remove( self, client ):
         self.items.remove( client )
         
@@ -63,11 +68,6 @@ class Cycle:
 
     def __len__( self ):
         return self.items.__len__()
-
-    def set_current( self, obj ):
-        for self.index in range( len( self ) ):
-            if( self.current() == obj ):
-                return
 
     def next( self ):
         """

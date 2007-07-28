@@ -70,6 +70,7 @@ class FrameClient( object ):
         log.debug( "frame_get_focus" )
         log.debug( "setting current frame to %s" % self.frame )
         self.wm.workspaces.current().current_frame = self.frame
+        self.frame.set_current_window( self )
 
     def add_to_frame( self, frame ):
         log.debug( "FrameClient.add_to_frame" )
@@ -145,7 +146,7 @@ class Frame:
         self.activate()
 
     def prev( self ):
-        "Move to the next window in this pane."
+        "Move to the prev window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
         log.debug( "Frame.prev" )
         self.deactivate()
@@ -153,12 +154,15 @@ class Frame:
         self.activate()
 
     def set_current( self, index ):
-        "Move to the next window in this pane."
+        "set the current window to index."
         #clients = self.screen.query_clients(panefilter(self), 1)
         log.debug( "Frame.set_current" )
         self.deactivate()
         self.windows.index = index
         self.activate()
+
+    def set_current_window( self, window ):
+        self.windows.set_current( window )
 
     def show( self ):
         log.debug( "Frame.show" )

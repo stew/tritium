@@ -265,6 +265,8 @@ class Tab:
 
     def tab_mouse_up( self, event ):
         log.debug( "Tab.tab_mouse_up" )
+        self.window.dispatch.remove_handler( self.tab_mouse_up ) 
+        self.window.dispatch.remove_handler( self.tab_drag )        
         self.frame.wm.display.ungrab_pointer( X.CurrentTime )
         if self.tab_dragging:
             self.tab_dragging = False
