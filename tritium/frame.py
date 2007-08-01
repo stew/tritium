@@ -437,25 +437,25 @@ class SplitFrame( Frame ):
     def remove_me( self, me ):
         log.debug( "SplitFrame.remove_me" )
         if self.frame1 == me:
-            with = self.frame2
+            replacewith = self.frame2
         else:
-            with = self.frame1
+            replacewith = self.frame1
 
         for client in me.windows:
-            client.add_to_frame( with )
+            client.add_to_frame( replacewith )
 
         self.window.destroy()
-        self.tritium_parent.replace_me( self, with )
-        with.moveresize( self.x, self.y, self.width, self.height )
+        self.tritium_parent.replace_me( self, replacewith )
+        replacewith.moveresize( self.x, self.y, self.width, self.height )
 
-    def replace_me( self, me, with ):
+    def replace_me( self, me, replacewith ):
         log.debug( "SplitFrame.replace_me" )
         if self.frame1 == me:
-            self.frame1 = with
+            self.frame1 = replacewith
         elif self.frame2 == me:
-            self.frame2 = with
+            self.frame2 = replacewith
 
-        with.tritium_parent = self
+        replacewith.tritium_parent = self
 
     def __str__( self ):
         log.debug( "SplitFrame.__str__" )

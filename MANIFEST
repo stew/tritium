@@ -13,3 +13,5 @@ tritium/submap.py
 tritium/tab.py
 tritium/title.py
 tritium/workspace.py
+tritium/identify.py
+etc/layout.py
