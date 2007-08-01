@@ -147,10 +147,10 @@ class Workspace:
         self.frame.deactivate()
         self.frame.hide()
 
-    def replace_me( self, me, with ):
+    def replace_me( self, me, replacewith ):
         log.debug( "Workspace.replace_me" )
         assert( self.frame == me )
-        self.frame = with
+        self.frame = replacewith
         self.frame.tritium_parent = self
         self.current_frame = self.frame.first_child_frame()
 
