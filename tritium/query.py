@@ -49,9 +49,10 @@ class query:
     def query( self, frame ):
         self.system = frame.screen.system
         window = input.inputWindow( self.prompt, frame.screen, length = 64)
+        window.history = self.history
         x = frame.x + ( ( frame.width - window.width ) >> 1 )
         y = (frame.height - frame.y)>>1
-        window.read( self, MyEditHandler, self.history, x, y )
+        window.read( self, MyEditHandler, x, y )
 
     def __call__( self, string ):
         self.history.append( string )

@@ -117,14 +117,13 @@ class TabClient:
         pass
 
     def tab_manage( self ):
-        log.debug( "tab_manage" )
+        log.debug( "tab_manage: %s" % self )
 	self.dispatch.add_handler(X.PropertyNotify, self.tab_property_notify)
         self.dispatch.add_handler(wmevents.ClientFocusIn, self.tab_get_focus)
         self.dispatch.add_handler(wmevents.ClientFocusOut, self.tab_lose_focus)
         self.dispatch.add_handler(wmevents.RemoveClient, self.tab_remove)
         self.dispatch.add_handler(X.UnmapNotify, self.tab_remove)
         self.dispatch.add_handler(X.DestroyNotify, self.tab_remove)
-        self.dispatch.add_handler(wmevents.RemoveClient, self.tab_remove)
 
 
     def tab_unmanage( self ):
@@ -137,8 +136,6 @@ class TabClient:
 
 
     def tab_property_notify(self, event):
-        log.debug( "TabClient.modefocusedtitle_property_notify" )
-
 	if self.current and event.atom == Xatom.WM_NAME:
             try:
                 self.tab.set_text( self.get_title())

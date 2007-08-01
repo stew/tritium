@@ -134,6 +134,7 @@ if __name__ == '__main__':
                 import contract
                 contract.checkmod(frame)
                 level=logging.DEBUG
+                wmanager.debug = wmanager.do_debug
             else:
                 usage()
         else:
