@@ -112,7 +112,7 @@ class TabClient:
         pass
 
     def __client_del__(self):
-        sellf.tab_remove()
+        self.tab_remove()
         log.debug( "TabClient.__client_del__" )
         pass
 
@@ -198,18 +198,20 @@ class Tab:
         
     def hide( self ):
         log.debug( "Tab.hide" )
-	(x, y, width, height, borderwidth) = self.window.geometry()
-        self.hide_x = x
-        self.hide_y = y
-        new_x = self.client.screen.root_width + 1
-        new_y = self.client.screen.root_height + 1
-        log.debug( "moving %s from (%d, %d) to (%d, %d)" % (self,x,y,new_x,new_y) )
-        self.window.move( new_x, new_y )
+# 	(x, y, width, height, borderwidth) = self.window.geometry()
+#         self.hide_x = x
+#         self.hide_y = y
+#         new_x = self.client.screen.root_width + 1
+#         new_y = self.client.screen.root_height + 1
+#         log.debug( "moving %s from (%d, %d) to (%d, %d)" % (self,x,y,new_x,new_y) )
+#         self.window.move( new_x, new_y )
+        self.window.unmap();
 
     def show( self ):
         log.debug( "Tab.show" )
-        log.debug( "moving %s back to (%d, %d)" % (self,self.hide_x,self.hide_y) )
-        self.window.move( self.hide_x,self.hide_y )
+#         log.debug( "moving %s back to (%d, %d)" % (self,self.hide_x,self.hide_y) )
+#         self.window.move( self.hide_x,self.hide_y )
+        self.window.map();
 
     def _tab_create_gcs( self, window ):
         log.debug( "Tab._tab_create_gcs" )
@@ -239,6 +241,7 @@ class Tab:
 	(x, y, width, height, borderwidth) = self.window.geometry()
         log.debug( "raising clieng with geometry: (%d,%d,%d,%d) " % (x,y,width,height ))
 	self.client.raisewindow()
+        self.client.workspace.raisewindows() # raise the "alwaysontop" windows
 	self.window.raisewindow()
         self.frame.wm.set_current_client( self.client )
 

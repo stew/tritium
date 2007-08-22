@@ -30,13 +30,12 @@ from plwm import wmanager, keys, inspect, \
 import logging
 import tritium
 import sys,os
-from tritium import tab,workspace,frame,title
+from tritium import tab,workspace,frame,title,dock
 from tritium.query import *
 from tritium.submap import SubMap
 from Xlib import XK 
 
 log = logging.getLogger()
-
 
 class TritiumMenuHandler(menu.MenuCharHandler):
     Any_Escape = C_g = menu.MenuKeyHandler._abort
@@ -45,6 +44,7 @@ class TritiumMenuHandler(menu.MenuCharHandler):
     Any_BackSpace = Any_Up = C_p = menu.MenuKeyHandler._up
 
 class TritiumClient( wmanager.Client,
+                     tritium.dock.DockClient,
 		     border.BorderClient,
 		     tritium.title.TitleClient,
 		     tritium.tab.TabClient,
@@ -67,13 +67,15 @@ class LayoutScreen:
         if layout.TritiumLayout.__dict__.has_key( method ):
             layout.TritiumLayout.__dict__[method]( self.layout, self )
 
-class TritiumScreen( wmanager.Screen,
+class TritiumScreen( tritium.dock.DockScreen,
+                     wmanager.Screen,
 		     color.Color,
                      LayoutScreen,
 		     message.screenMessage,
 		     tritium.tritiumScreen,
 		     menu.screenMenu,
-		     tritium.title.TitleScreen):
+		     tritium.title.TitleScreen,
+                     ):
     "And panes on the screen, and I'm going to want some menus."
 
     menu_handler = TritiumMenuHandler

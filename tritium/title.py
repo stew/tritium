@@ -248,6 +248,7 @@ class TitleClient:
     def activate_client( self ):
         log.debug( "TitleClient.activate_client" )
 	self.decoration_window.raisewindow()
+        self.workspace.raisewindows() # raise the "alwaysontop" windows
         self.wm.current_frame().wm.set_current_client( self )
         
     def destroy( self ):
@@ -281,7 +282,7 @@ class TitleClient:
                                    X.GrabModeAsync, X.GrabModeAsync, 0, 0, X.CurrentTime )
         self.titlebar_moving = True
         self.titlebar_resizing = False
-        self.decoration_window.raisewindow()
+        self.workspace.raisewindows() # raise the "alwaysontop" windows
         self.wm.current_frame().wm.set_current_client( self )
         (x, y, width, height, borderwidth) = self.decoration_window.geometry()
         self.tab_drag_start_x = event.root_x - x
@@ -299,6 +300,7 @@ class TitleClient:
         self.titlebar_moving = False
         self.titlebar_resizing = True
         self.decoration_window.raisewindow()
+        self.workspace.raisewindows() # raise the "alwaysontop" windows
         self.wm.current_frame().wm.set_current_client( self )
         (x, y, width, height, borderwidth) = self.decoration_window.geometry()
         self.tab_drag_start_x = x

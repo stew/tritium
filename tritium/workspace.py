@@ -24,6 +24,8 @@ from frame import FloatingFrame, TabbedFrame
 import logging
 log = logging.getLogger()
 
+FLOATING, TABBED = range( 2 )
+
 class WorkspaceWindowManager:
     """
     window manager mixin for a wm with workspaces
@@ -62,26 +64,36 @@ class WorkspaceWindowManager:
             self.workspaces.current().activate()
 
     def get_workspace_by_name( self, name ):
-        return self.workspaceDict[ name ]
+        (ws,index) = self.workspaceDict[ name ]
+        return ws
 
-    def new_workspace( self, screen, floating=False, name="" ):
+
+    def new_workspace( self, screen, type=TABBED, name="" ):
         log.debug( "tritiumWindowManager.new_workspace" )
         try:
             (ws,index) = self.workspaceDict[ name ]
         except KeyError:
-            ws = Workspace( screen, floating, name )
-            self.workspaceDict[ name ] = ws
+            ws = Workspace( screen, type, name )
+            index = len(self.workspaces)
+            self.workspaceDict[ name ] = (ws,index)
             self.workspaces.append( ws )
-            index = len( self.workspaces ) - 1
 
         self.set_current_workspace( index )
         return ws
 
+class OnTopFilter:
+    def __call__( self, client ):
+        try:
+            return client.__getattribute__( 'on_top' )
+        except:
+            return False
+        
+
 class WorkspaceClient:
     def __client_init__( self ):
         log.debug( "WorkspaceClient.__client_init__: %s" % self )
-	(x, y, width, height, borderwidth) = self.geometry()
-        self.workspace = self.wm.workspaces.current()
+        if not self.dockapp:
+            self.workspace = self.wm.workspaces.current()
 
     def hide( self ):
         log.debug( "WorkspaceClient.hide: %s" % self )
@@ -108,17 +120,28 @@ class WorkspaceScreen:
         pass
 
 class Workspace:
-    def __init__( self, screen, floating=False, name="" ):
+    def __init__( self, screen, type=TABBED, name="" ):
         log.debug( "Workspace.__init__" )
         self.name = name
         self.screen = screen
         self.active = False
-        if floating:
+        if type == FLOATING:
             self.current_frame = self.frame = FloatingFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
         else:
             self.current_frame = self.frame = TabbedFrame( self.screen, 0, 0, screen.root_width, screen.root_height )
 
         self.current_frame.tritium_parent = self
+
+    def raisewindows( self ):
+        """ 
+        way to notify the workspace that a window was raised, and
+        therefore all "on top" windows need to be raised as
+        well. perhaps if python-xlib supported XRestackWindows, this
+        would be better
+        """
+        for client in self.screen.query_clients( OnTopFilter() ):
+            client.raisewindow()
+        pass
 
     def next_frame( self ):
         log.debug( "Workspace.next_frame" )

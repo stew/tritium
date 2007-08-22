@@ -50,10 +50,11 @@ class FrameClient( object ):
     """
     def __client_init__( self ):
         log.debug( "FrameClient.__client_init__" )
-        self.frame_dragging = False
-        frame = self.wm.find_me_a_home( self )
-        self.add_to_frame( frame )
-        self.dispatch.add_handler(wmevents.ClientFocusIn, self.frame_get_focus)
+        if not self.dockapp:
+            self.frame_dragging = False
+            frame = self.wm.find_me_a_home( self )
+            self.add_to_frame( frame )
+            self.dispatch.add_handler(wmevents.ClientFocusIn, self.frame_get_focus)
 
     # moved this into its own function so I can allow for frame not
     # yet being assigned
@@ -269,6 +270,12 @@ class SplitFrame( Frame ):
 
         self.create_split_window()
 
+    def _activate(self):
+        log.debug( "SplitFrame._activate" )
+        Frame._activate( self )
+        self.window.raisewindow()
+    activate=_activate
+
     def moveresize( self, x, y, width, height ):
         log.debug( "SplitFrame.moveresize" )
         self.x = x
@@ -277,12 +284,12 @@ class SplitFrame( Frame ):
         self.height = height
 
         if self.vertical:
-            self.split = height >> 1
+#            self.split = height >> 1
             self.window.moveresize( self.x, self.split, self.width, 4 )
             self.frame1.moveresize( self.x, self.y, self.width, self.split )
             self.frame2.moveresize( self.x, self.split+4, self.width, self.height - self.split - 4 )
         else:
-            self.split = width >> 1
+#            self.split = width >> 1
             self.window.moveresize( self.split, self.y, 4, self.height )
             self.frame1.moveresize( self.x, self.y, self.split, self.height )
             self.frame2.moveresize( self.split+4, self.y, self.width - self.split - 4, self.height )
@@ -360,13 +367,13 @@ class SplitFrame( Frame ):
         
         if self.vertical:
             window = self.screen.root.create_window(
-                self.x, self.split, self.width, 4, 0,
+                self.x, self.split, self.width, 8, 0,
                 X.CopyFromParent, X.InputOutput, X.CopyFromParent,
                 event_mask = X.ExposureMask
                 )
         else:
             window = self.screen.root.create_window(
-                self.split, self.y, 4, self.height, 0,
+                self.split, self.y, 8, self.height, 0,
                 X.CopyFromParent, X.InputOutput, X.CopyFromParent,
                 event_mask = X.ExposureMask
                 )
@@ -378,6 +385,7 @@ class SplitFrame( Frame ):
         self.window.dispatch.add_handler( X.ButtonPress, self.splitbar_mouse_down )
         self.window.dispatch.add_handler( X.MotionNotify, self.splitbar_drag )        
         window.map()
+        self.window.raisewindow()
         self._create_gcs( window )
 
     def _create_gcs( self, window ):
@@ -398,15 +406,15 @@ class SplitFrame( Frame ):
     def redraw( self, event = None ):
         log.debug( "SplitFrame.redraw" )
         if self.vertical:
-            self.window.fill_rectangle( self.split_gc1, self.x, 0, self.width, 1 )
-            self.window.fill_rectangle( self.split_gc2, self.x, 1, self.width, 1 )
-            self.window.fill_rectangle( self.split_gc3, self.x, 2, self.width, 1 )
-            self.window.fill_rectangle( self.split_gc4, self.x, 3, self.width, 1 )
+            self.window.fill_rectangle( self.split_gc1, 0, 0, self.width, 2 )
+            self.window.fill_rectangle( self.split_gc2, 0, 2, self.width, 2 )
+            self.window.fill_rectangle( self.split_gc3, 0, 4, self.width, 2 )
+            self.window.fill_rectangle( self.split_gc4, 0, 6, self.width, 2 )
         else:
-            self.window.fill_rectangle( self.split_gc1, 0, self.y, 1, self.height )
-            self.window.fill_rectangle( self.split_gc2, 1, self.y, 1, self.height )
-            self.window.fill_rectangle( self.split_gc3, 2, self.y, 1, self.height )
-            self.window.fill_rectangle( self.split_gc4, 3, self.y, 1, self.height )
+            self.window.fill_rectangle( self.split_gc1, 0, 0, 2, self.height )
+            self.window.fill_rectangle( self.split_gc2, 2, 0, 2, self.height )
+            self.window.fill_rectangle( self.split_gc3, 4, 0, 2, self.height )
+            self.window.fill_rectangle( self.split_gc4, 6, 0, 2, self.height )
 
     def splitbar_mouse_down( self, event ):
         log.debug( "SplitFrame.splitbar_mouse_down" )
@@ -427,12 +435,12 @@ class SplitFrame( Frame ):
                 self.split = event.root_y - self.splitbar_drag_start
                 self.window.move( self.x, self.split )
                 self.frame1.moveresize( self.x, self.y, self.width, self.split )
-                self.frame2.moveresize( self.x, self.split+4, self.width, self.height - self.split - 4 )
+                self.frame2.moveresize( self.x, self.split+8, self.width, self.height - self.split - 8 )
             else:
                 self.split = event.root_x - self.splitbar_drag_start
                 self.window.move( self.split, self.y  )
                 self.frame1.moveresize( self.x, self.y, self.split, self.height )
-                self.frame2.moveresize( self.split+4, self.y, self.width - self.split - 4, self.height )
+                self.frame2.moveresize( self.split+8, self.y, self.width - self.split - 8, self.height )
 
     def remove_me( self, me ):
         log.debug( "SplitFrame.remove_me" )
@@ -561,7 +569,7 @@ class TabbedFrame( Frame ):
         """
         log.debug( "TabbedFrame.place_window: %s " % window.get_title() )
         if not window: window = self.windows.current()
-        window.moveresize( self.x, self.y + self.screen.title_height, self.width, self.height-self.screen.title_height)
+        window.moveresize( self.x, self.y + self.screen.title_height, self.width-2, self.height-self.screen.title_height-2)
         window.hidden = False # ugh, i don't like having to set it here, but this seems to be before __client_init__ is called
         if not self.visible():
             window.hide()
