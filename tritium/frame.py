@@ -335,6 +335,19 @@ class SplitFrame( Frame ):
     leftmost_child = topmost_child
     rightmost_child = bottommost_child
 
+    def hide( self ):
+        log.debug( "SplitFrame.hide" )
+        Frame.hide( self )
+        self.frame1.hide()
+        self.frame2.hide()
+        self.window.unmap()
+
+    def show( self ):
+        log.debug( "SplitFrame.hide" )
+        Frame.show( self )
+        self.frame1.show()
+        self.frame2.show()
+        self.window.map()
 
     def find_frame( self, x, y ):
         log.debug( "SplitFrame.find_frame" )
