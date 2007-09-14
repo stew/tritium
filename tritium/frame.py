@@ -50,9 +50,11 @@ class FrameClient( object ):
     """
     def __client_init__( self ):
         log.debug( "FrameClient.__client_init__" )
-        if not self.dockapp:
+        frame = self.wm.find_me_a_home( self )
+        if self.dockapp:
+            self.frame = None
+        else:
             self.frame_dragging = False
-            frame = self.wm.find_me_a_home( self )
             self.add_to_frame( frame )
             self.dispatch.add_handler(wmevents.ClientFocusIn, self.frame_get_focus)
 

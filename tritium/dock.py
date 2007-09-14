@@ -31,37 +31,9 @@ class DockScreen:
         self.dock_windows = []
         self.dock_size = 0
 
-    def set_dock_area( self, where=BOTTOM, size=64, gravity=X.SouthWestGravity, transparent=False ):
+    def set_dock_area( self, where=BOTTOM, size=64, gravity=X.SouthGravity ):
         self.dock_where = where
-        if transparent:
-            log.debug( "STU transparant" )
-            if where == BOTTOM:
-                self.dock_x = 0
-                self.dock_y = self.root_height - size
-                self.dock_width = self.root_width
-                self.dock_height = size
-
-            elif where == TOP:
-                self.dock_x = 0
-                self.dock_y = 0
-                self.dock_width = self.root_width
-                self.dock_height = size
-
-            elif where == LEFT:
-                self.dock_x = 0
-                self.dock_y = 0
-                self.dock_width = size
-                self.dock_height = self.root_height
-
-            else:
-                self.dock_x = self.root_width - size
-                self.dock_y = 0
-                self.dock_width = size
-                self.dock_height = self.root_height
-            
-        else:
-            log.debug( "STU NOT transparant" )
-            self.dock_x, self.dock_y, self.dock_width, self.dock_height = self.alloc_border( where, size )
+        self.dock_x, self.dock_y, self.dock_width, self.dock_height = self.alloc_border( where, size )
 
     def add_dock_window( self, client ):
         dock_windows.append( client )

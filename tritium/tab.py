@@ -23,6 +23,7 @@ from Xlib import X, Xatom
 from plwm import wmevents
 from cycle import Cycle
 import frame
+import sys
 
 class Tabs:
     def __init__( self, frame ):
@@ -109,15 +110,19 @@ class Tabs:
 class TabClient:
     def __client_init__(self):
         log.debug( "TabClient.__client_init__" )
-        pass
+        self.tab_managed = False
 
     def __client_del__(self):
-        self.tab_remove()
         log.debug( "TabClient.__client_del__" )
-        pass
+        try:
+            if self.tab_managed:
+                self.tab_remove()
+        except:
+            print sys.exc_info()[1]
 
     def tab_manage( self ):
         log.debug( "tab_manage: %s" % self )
+        self.tab_managed = True
 	self.dispatch.add_handler(X.PropertyNotify, self.tab_property_notify)
         self.dispatch.add_handler(wmevents.ClientFocusIn, self.tab_get_focus)
         self.dispatch.add_handler(wmevents.ClientFocusOut, self.tab_lose_focus)
@@ -129,6 +134,7 @@ class TabClient:
     def tab_unmanage( self ):
         log.debug( "tab_unmanage" )
 
+        self.tab_managed = False
 	self.dispatch.remove_handler( self.tab_property_notify)
         self.dispatch.remove_handler( self.tab_get_focus)
         self.dispatch.remove_handler( self.tab_lose_focus)
@@ -198,19 +204,10 @@ class Tab:
         
     def hide( self ):
         log.debug( "Tab.hide" )
-# 	(x, y, width, height, borderwidth) = self.window.geometry()
-#         self.hide_x = x
-#         self.hide_y = y
-#         new_x = self.client.screen.root_width + 1
-#         new_y = self.client.screen.root_height + 1
-#         log.debug( "moving %s from (%d, %d) to (%d, %d)" % (self,x,y,new_x,new_y) )
-#         self.window.move( new_x, new_y )
         self.window.unmap();
 
     def show( self ):
         log.debug( "Tab.show" )
-#         log.debug( "moving %s back to (%d, %d)" % (self,self.hide_x,self.hide_y) )
-#         self.window.move( self.hide_x,self.hide_y )
         self.window.map();
 
     def _tab_create_gcs( self, window ):
