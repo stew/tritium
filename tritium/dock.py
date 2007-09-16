@@ -49,13 +49,13 @@ class DockClient:
         log.debug( "DockClient.__client_init__" )
 
         self.dockapp = False
-        if( self.screen.dock_where ):
-            # is this client a dockapp?
-            wmh = self.window.get_wm_hints()
-            if wmh and wmh.flags & Xutil.IconWindowHint:
-                self.dockapp = True
-                self.on_top = True
-                self.dock_manage()
+#         if( self.screen.dock_where ):
+#             # is this client a dockapp?
+#             wmh = self.window.get_wm_hints()
+#             if wmh and wmh.flags & Xutil.IconWindowHint:
+#                 self.dockapp = True
+#                 self.on_top = True
+#                 self.dock_manage()
     
     def dock_manage( self ):
         self.move( self.screen.dock_x, self.screen.dock_y )

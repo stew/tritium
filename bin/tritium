@@ -134,7 +134,7 @@ if __name__ == '__main__':
         if( len( sys.argv ) == 2 ):
             if sys.argv.pop() == '-d':
                 import contract
-                contract.checkmod(frame)
+                contract.checkmod(tab)
                 level=logging.DEBUG
                 wmanager.debug = wmanager.do_debug
             else:

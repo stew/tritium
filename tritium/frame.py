@@ -62,7 +62,7 @@ class FrameClient( object ):
     # yet being assigned
     def _check_frame_state( self ):
         try:
-            return self.__getattribute__( 'frame' ) != None
+            return self.dockapp or (self.__getattribute__( 'frame' ) != None)
         except:
             return True
         
@@ -78,8 +78,7 @@ class FrameClient( object ):
 
     def add_to_frame( self, frame ):
         log.debug( "FrameClient.add_to_frame" )
-        log.debug( "adding to frame: %s" % frame )
-        self.frame = frame
+       	self.frame = frame
         frame.append( self )
 
     def move_to_frame( self, new_frame ):
@@ -132,6 +131,7 @@ class Frame:
         if self.visible():
             self.deactivate()
 
+        window.dispatch.add_handler( wmevents.RemoveClient, self.remove_client_event )
         self.windows.insert_after_current( window )
 
 	if self.visible():
@@ -139,10 +139,15 @@ class Frame:
 
         window.frame = self
 
+    def remove_client_event( self, event ):
+        log.debug( "Frame.remove_client_event" )
+        self.remove( event.client )
+
     def remove( self, window ):
         log.debug( "Frame.remove" )
         log.debug( "removing window: %s from frame %s with windows: %s" % (window,self,self.windows))
         cur = self.windows.current()
+        window.dispatch.remove_handler( self.remove_client_event )
         self.windows.remove( window )
         if cur == window:
             self.deactivate()
@@ -155,7 +160,6 @@ class Frame:
 
     def next( self ):
         "Move to the next window in this pane."
-        #clients = self.screen.query_clients(panefilter(self), 1)
         log.debug( "Frame.next" )
         self.deactivate()
         self.windows.next()
@@ -163,7 +167,6 @@ class Frame:
 
     def prev( self ):
         "Move to the prev window in this pane."
-        #clients = self.screen.query_clients(panefilter(self), 1)
         log.debug( "Frame.prev" )
         self.deactivate()
         self.windows.prev()
@@ -171,7 +174,6 @@ class Frame:
 
     def set_current( self, index ):
         "set the current window to index."
-        #clients = self.screen.query_clients(panefilter(self), 1)
         log.debug( "Frame.set_current" )
         self.deactivate()
         self.windows.index = index
@@ -458,7 +460,8 @@ class SplitFrame( Frame ):
                 self.frame2.moveresize( self.split+8, self.y, self.width - self.split - 8, self.height )
 
     def remove_me( self, me ):
-        log.debug( "SplitFrame.remove_me" )
+        log.debug( "SplitFrame.remove_me call for frame: %s with windows: %s" % ( self, self.windows )  )
+
         if self.frame1 == me:
             replacewith = self.frame2
         else:
@@ -536,6 +539,7 @@ class TabbedFrame( Frame ):
         self.tabs = Tabs( self )
 
     def append( self, window ):
+        Frame.append( self, window )
         log.debug( "TabbedFrame.append" )
         tab = Tab( self, window )
         window.tab = tab
@@ -545,7 +549,6 @@ class TabbedFrame( Frame ):
         tab.set_text( window.get_title() )
         # shouldn't some of the stuff above be moved into tab_manage?
         window.tab_manage()
-        Frame.append( self, window )
 
     def moveresize( self, x, y, width, height ):
         log.debug( "TabbedFrame.moveresize" )

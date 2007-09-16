@@ -40,13 +40,23 @@ class Cycle:
         self.items = []
         self.index = 0
 
-    def append( self, window ):
-        self.items.append( window )
+    def __str__( self ):
+        return "Cycle: %s" % self.items
 
-    def insert_after_current( self, window ):
-        self.items.insert( self.index+1, window )
+    def append( self, item ):
+        self.items.append( item )
+
+    def insert_after_current( self, item ):
+        self.items.insert( self.index+1, item )
         self.index += 1
-        
+
+    def contains( self, item ):
+        try:
+            self.items.index( item )
+            return True
+        except:
+            return False
+
     def current( self ):
         self._adjust()
         if len( self.items ):
