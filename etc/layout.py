@@ -1,22 +1,50 @@
 import re
 import logging
+from tritium import workspace,dock
+from Xlib import X
+
 log = logging.getLogger()
 
 class TritiumLayout:
 
     def screen_0( self, screen ):
-        screen.wm.new_workspace( screen, False, "shell" )
-        screen.wm.new_workspace( screen, False, "comm" )
-        screen.wm.new_workspace( screen, False, "emacs" )
-        screen.wm.new_workspace( screen, False, "web" )
+        """ 
+        screen_0 is called when the screen is first initialized.
+        (screen_1, screen_2, etc will be called for subsequent screens).
+        This gives us a chance to setup workspaces / frames 
+        """
+
+        wm = screen.wm
+
+
+        # the following allocates a 25 pixel area at the bottom of the
+        # screen where clients marked with "dockapp=True" will be placed.
+        # I use this to run a gnome-panel
+        screen.set_dock_area( dock.BOTTOM, 25 )
+
+        wm.new_workspace( screen, workspace.TABBED, "shell" )
+        wm.new_workspace( screen, workspace.TABBED, "client" )
+        wm.new_workspace( screen, workspace.TABBED, "emacs" )
+        wm.new_workspace( screen, workspace.TABBED, "web" )
+
         screen.wm.set_current_workspace( 0 )
+        wm.current_frame().split_horizontally()
 
     xterm_re = re.compile( 'xterm',re.IGNORECASE )
     firefox_re = re.compile( 'firefox',re.IGNORECASE )
     emacs_re = re.compile( 'emacs',re.IGNORECASE )
+    music_re = re.compile( 'music',re.IGNORECASE )
+    gnome_panel_re = re.compile( 'Gnome-panel',re.IGNORECASE )
 
     def which_frame( self, client ):
+        """
+        which_frame is called for each new client that is created.  It
+        gives us a chance to decide where the new client should be placed
+        """
         (appname, appclass) = client.window.get_wm_class()
+
+        if( self.gnome_panel_re.match( appclass ) ):
+            client.dockapp = True
 
         if( self.firefox_re.match( appclass ) ):
             ws = client.wm.get_workspace_by_name( "web" )
@@ -28,5 +56,7 @@ class TritiumLayout:
             if ws:
                 return ws.current_frame
 
-        else:
-            log.debug( "TritiumLayout.which_frame: %s did not match any re" % appclass )
+        elif( self.music_re.match( appname ) ):
+            ws = client.wm.get_workspace_by_name( "client" )
+            if ws:
+                return ws.current_frame

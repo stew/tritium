@@ -1,5 +1,6 @@
 # -*-python-*-
 
+import sys
 from Xlib import XK
 from plwm import keys
 from tritium.submap import SubMap
@@ -29,6 +30,10 @@ from tritium.identify import IdentifyWindow
 """
 
 class TritiumKeys(keys.KeyHandler):
+    def __init__( self, a ):
+        keys.KeyHandler.__init__( self, a )
+        self.wii = None
+
     class CtrlJ( SubMap ):
         def Any_c( self, event ):
             self.wm.current_frame().screen.system( "x-terminal-emulator &")
@@ -52,13 +57,6 @@ class TritiumKeys(keys.KeyHandler):
             self.wm.current_frame().set_current( self.wm.display.keycode_to_keysym(event.detail, 0) - XK.XK_1 )
 
         Any_1 = Any_2 = Any_3 = Any_4 = Any_5 = Any_6 = Any_7 = Any_9 = _1 
-
-    class NoKeys( keys.KeyGrabKeyboard ):
-        """
-        Ungrab all keys except one so that the window manager 'gets
-        out of your way'.
-        """
-        F11 = keys.KeyGrabKeyboard._timeout
 
     def F1( self, event ):
         self.wm.runMan.query( self.wm.current_frame() )
@@ -117,9 +115,28 @@ class TritiumKeys(keys.KeyHandler):
         self.CtrlJ( self.wm, event.time )
 
     def M4_k( self, event ):
-        cw = self.wm.current_frame().windows.current()
-        cw.frame.tritium_parent.find_frame_above()
-	#TODO: finish this
+        old = self.wm.current_frame()
+        new = old.tritium_parent.find_frame_above( old )
+        old.deactivate()
+        new.activate();
+
+    def M4_j( self, event ):
+        old = self.wm.current_frame()
+        new = old.tritium_parent.find_frame_below( old )
+        old.deactivate()
+        new.activate();         
+
+    def M4_semicolon( self, event ):
+        old = self.wm.current_frame()
+        new = old.tritium_parent.find_frame_right( old )
+        old.deactivate()
+        new.activate();
+
+    def M4_g( self, event ):
+        old = self.wm.current_frame()
+        new = old.tritium_parent.find_frame_left( old )
+        old.deactivate()
+        new.activate();
 
     def S_M4_h( self, event ):
         cw = self.wm.current_frame().windows.current()
@@ -143,12 +160,7 @@ class TritiumKeys(keys.KeyHandler):
     def M4_i( self, event ):
         IdentifyWindow( self.wm.current_frame().windows.current(), event.time )
 
-#     def F11( self, event ):
-#         self.NoKeys( self.wm, event.time )
-
     def F11(self, evt):
-	wmanager.debug('keys', 'dropping keygrabs temporarily')
-
 	# First release all our grabs.  They will be reinstalled
 	# when BypassHandler exits
 	
@@ -157,4 +169,16 @@ class TritiumKeys(keys.KeyHandler):
 
     def F12( self, event ):
         self.wm.Debian_menu()
-        
+    
+    def F10( self, event ):
+        if self.wii == None:
+            try:
+                WiiCallback( self.wm )
+                log.info( "connected to wiimote" )
+            except:
+                etype = sys.exc_info()[0]
+                evalue = sys.exc_info()[1]
+                log.debug('Error in routine: your routine here\n')
+                log.debug('Error Type: ' + str(etype) + '\n')
+                log.debug('Error Value: ' + str(evalue) + '\n')
+
