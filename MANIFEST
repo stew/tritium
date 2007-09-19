@@ -5,6 +5,7 @@ setup.py
 bin/tritium
 docs/tritium.1
 etc/keys.py
+etc/layout.py
 tritium/__init__.py
 tritium/cycle.py
 tritium/frame.py
@@ -14,4 +15,4 @@ tritium/tab.py
 tritium/title.py
 tritium/workspace.py
 tritium/identify.py
-etc/layout.py
+tritium/dock.py
