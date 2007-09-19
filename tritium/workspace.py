@@ -143,11 +143,20 @@ class Workspace:
             client.raisewindow()
         pass
 
+
     def next_frame( self ):
         log.debug( "Workspace.next_frame" )
         self.current_frame.deactivate()
         self.current_frame = self.current_frame.next_frame()
         self.current_frame.activate()
+
+    def next_sibling_frame( self, frame ):
+        """
+        this function ends up getting called when the last frame in a
+        workspace calls "next_sibling_frame" so here we will return
+        the first frame so that the frames will cycle
+        """
+        return self.frame.first_child_frame()
 
     def find_frame( self, x, y ):
         log.debug( "Workspace.find_frame" )
