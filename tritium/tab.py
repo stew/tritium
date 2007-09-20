@@ -331,15 +331,15 @@ class Tab:
                 self.frame.tabs.resize_tabs()
         
     def tab_drag( self, event ):
-        """
-        pre:
-            not self._deleted
-        """
-    def tab_remove( self ):
         if self.tab_dragging:
             self.window.move( event.root_x - self.tab_drag_start_x ,
                               event.root_y - self.tab_drag_start_y )
 
+    def tab_remove( self ):
+        """
+        pre:
+            not self._deleted
+        """
         log.debug( "Tab.tab_remove: %s" % self )
         if self.window:
             self.window.destroy()

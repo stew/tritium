@@ -23,11 +23,6 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
 
 * Need to move the fonts / colors to .Xresources
 
-* Statusbar / dock
-  If we just allow the user to specify a static area on the screen
-  which isn't used by frames, the user can reuse functionality from
-  other docs/panels such as gnome_panel
-
 * Dragging tabs to other workspaces
   When you start dragging a tab, the hit a key to switch to another
   workspace, you should be able to drop the tab on that workspace.  It
