@@ -24,7 +24,6 @@ from plwm import wmevents
 from cycle import Cycle
 import frame
 import sys
-import traceback
 
 class Tabs:
     def __init__( self, frame ):
@@ -198,7 +197,6 @@ class Tab:
         self.hide_x = 0
         self.hide_y = 0
         self._deleted = False # this is just for debugging
-        traceback.print_stack()
 
     def __str__( self ):
         return( "Tab \"%s\"" % self.text )
@@ -210,8 +208,6 @@ class Tab:
         """
         log.debug( "Tab.create_tab_window" )
         
-        traceback.print_stack()
-
         if self.width:
             window = self.frame.screen.root.create_window(
                 x, self.frame.y, self.width, self.frame.screen.title_height, 0,
