@@ -87,7 +87,7 @@ class TritiumConfig:
     def __wm_screen_init__( self ):
         log.debug( "TritiumConfig.__wm_screen_init__" )
         # the directories we searce for keys.py and layout.py in reverse order:
-        sys.path.insert( 0, "/etc/X11/tritium/config" )
+        sys.path.insert( 0, "/etc/X11/tritium" )
         sys.path.insert( 0, "/etc/tritium/config" )
         sys.path.insert( 0, "/usr/local/etc/X11/tritium/config" )
         sys.path.insert( 0, "/usr/local/etc/tritium/config" )
