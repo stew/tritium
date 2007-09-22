@@ -2,6 +2,13 @@
 
 note: MORE_TODO_ITEMS=$(grep -r TODO *)
 
+* restart
+  if there was a way to restart tritium (reread config, (redo
+  layout?)) it would often be helpful
+
+* keyboard resizing
+  <dondelelcaro> stew: dragging is hard. ;-)
+
 * Add completion to query.py
   for instance, runCommand should show completions from expanding
   PATH, runSSH should show completions from known_hosts
@@ -31,7 +38,8 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
 
 * Get menus working
   we at least have a debian menu now when you hit f12, but we should
-  have menus for stuff like "close window"
+  have menus for stuff like "close window" that are available when
+  right clicking on the tabs
 
 * fullscreen current window
   hit a key and make the current window zoom to fullscreen, hit the
@@ -45,3 +53,14 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
 * find application by name
   ** I need to be able to hit 'C-j e' to switch to emacs or launch one if its not running
   ** plpwm in the plwm examples has such a function  
+
+* {next,prev}-workspace
+
+* dock on one workspace only
+  ** might not be an insignificant change, since right now we are
+     using a plwm function which changes the apparant screen size.  I
+     don't think there is a way to 'undo' it currnetly in plwm (which
+     means, setting and unsetting of the doc when changeing workspaces
+     is not currently an option)
+
+* hide titlebars with only one frame
