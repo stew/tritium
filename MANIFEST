@@ -6,6 +6,7 @@ bin/tritium
 docs/tritium.1
 etc/keys.py
 etc/layout.py
+extras/tritium.desktop
 tritium/__init__.py
 tritium/cycle.py
 tritium/frame.py
