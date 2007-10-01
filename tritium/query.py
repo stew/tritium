@@ -87,7 +87,10 @@ class runSSH( query ):
         self.system("x-terminal-emulator -e ssh " + string + " &")
 
 class runPython( query ):
-    "Read a hostname from from the user, and ssh to it in a terminal."
+    """Read a string from the user and exec it with 'wm' as the
+    context.
+
+    """
     def __init__( self ):
         query.__init__( self, ">>> " )
 
