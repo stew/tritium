@@ -97,6 +97,10 @@ class FrameClient( object ):
 class Frame:
     """
     a container for [fullscreen] windows
+    
+    inv:
+        self.tritium_parent != self
+
     """
     def __init__( self, screen, x, y, width, height ):
         log.debug( "Frame.__init__" )
@@ -148,6 +152,7 @@ class Frame:
         log.debug( "removing window: %s from frame %s with windows: %s" % (window,self,self.windows))
         cur = self.windows.current()
 #        window.dispatch.remove_handler( self.remove_client_event )
+
         try:
             self.windows.remove( window )
         except ValueError:
@@ -490,12 +495,12 @@ class SplitFrame( Frame ):
 
         replacewith.tritium_parent = self
 
-    def __str__( self ):
-        log.debug( "SplitFrame.__str__" )
-        if self.vertical:
-            return "SplitFrame(%d,%d,%d,%d): top: <" %(self.x,self.y,self.width,self.height) + str( self.frame1 ) + "> bottom: <" + str( self.frame2 ) + ">"
-        else:
-            return "SplitFrame(%d,%d,%d,%d): left: <" %(self.x,self.y,self.width,self.height) + str( self.frame1 ) + "> right: <" + str( self.frame2 ) + ">"
+#     def __str__( self ):
+#         log.debug( "SplitFrame.__str__" )
+#         if self.vertical:
+#             return "SplitFrame(%d,%d,%d,%d): top: <" %(self.x,self.y,self.width,self.height) + str( self.frame1 ) + "> bottom: <" + str( self.frame2 ) + ">"
+#         else:
+#             return "SplitFrame(%d,%d,%d,%d): left: <" %(self.x,self.y,self.width,self.height) + str( self.frame1 ) + "> right: <" + str( self.frame2 ) + ">"
         
 class XineramaFrame( Frame ):
     """
