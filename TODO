@@ -24,10 +24,6 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
     *** make a "floating frame" tab in the tab bar which contains all the floating windows
     *** make a "floating workspace" containing nothing but the floating frame
 
-* Saved layouts
-  well we have the starts of a way to have predefined layouts in
-  ~/.tritium/layout.py, bot no way to save a layout yet
-
 * Need to move the fonts / colors to .Xresources
 
 * Dragging tabs to other workspaces
@@ -64,3 +60,6 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
      is not currently an option)
 
 * hide titlebars with only one frame
+
+* Extended Window Manager Hints (EWMH)
+  http://standards.freedesktop.org/wm-spec/wm-spec-1.4.html

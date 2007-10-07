@@ -187,7 +187,7 @@ class Workspace:
         self.current_frame = self.frame.first_child_frame()
 
     def __str__( self ):
-        return "Workspace: " + str( self.frame )
+        return "Workspace: " + str( self.name )
             
     def find_frame_right( self, frame ):
         log.debug( "Workspace.find_frame_right" )

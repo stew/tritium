@@ -70,7 +70,6 @@ class Tabs:
         post:
             not self._contains( tab )
         """
-
         log.debug( "Tabs.remove" )
         log.debug( "removing tab: %s from 'tabs' %s with tabs: %s" % (object.__str__(tab),self,self.tabs))
         self.tabs.remove( tab )
@@ -179,9 +178,10 @@ class TabClient:
         log.debug( "TabClient.tab_remove" )
         self.tab_unmanage()
         if self.tab:
-            self.tab._deleted = True
             self.frame.tabs.remove( self.tab )
+            log.debug( "going to remove tab: %s" % self.tab )
             self.tab.tab_remove()
+            self.tab._deleted = True
 
 
 class Tab:
@@ -340,7 +340,7 @@ class Tab:
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_remove: %s" % self )
+        log.debug( "Tab.tab_remove: %s and my window: %s" % (self,self.window) )
         if self.window:
             self.window.destroy()
 
