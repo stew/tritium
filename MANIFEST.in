@@ -1,0 +1,10 @@
+README
+INSTALL
+TODO
+setup.py
+bin/tritium
+docs/tritium.1
+etc/keys.py
+etc/layout.py
+extras/tritium.desktop
+tritiun/*py
