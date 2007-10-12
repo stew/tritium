@@ -286,18 +286,19 @@ class Tab:
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_mouse_down" )
-        self.tab_dragging = True
-        self.window.dispatch.add_handler( X.ButtonRelease, self.tab_mouse_up ) 
-        self.window.dispatch.add_handler( X.MotionNotify, self.tab_drag )        
-        event.window.grab_pointer( False,
-                                   X.ButtonPressMask | X.ButtonReleaseMask | X.PointerMotionMask,
-                                   X.GrabModeAsync, X.GrabModeAsync, 0, 0, X.CurrentTime )
-        self.activate_client()
-	(x, y, width, height, borderwidth) = self.window.geometry()
-        self.tab_drag_start_x = event.root_x - x
-        self.tab_drag_start_y = event.root_y - y
-        
+        log.debug( "Tab.tab_mouse_down: %s" % event )
+        if( event.detail == 1 ):
+            self.tab_dragging = True
+            self.window.dispatch.add_handler( X.ButtonRelease, self.tab_mouse_up ) 
+            self.window.dispatch.add_handler( X.MotionNotify, self.tab_drag )        
+            event.window.grab_pointer( False,
+                                       X.ButtonPressMask | X.ButtonReleaseMask | X.PointerMotionMask,
+                                       X.GrabModeAsync, X.GrabModeAsync, 0, 0, X.CurrentTime )
+            self.activate_client()
+            (x, y, width, height, borderwidth) = self.window.geometry()
+            self.tab_drag_start_x = event.root_x - x
+            self.tab_drag_start_y = event.root_y - y
+
 
     def tab_mouse_up( self, event ):
         """
