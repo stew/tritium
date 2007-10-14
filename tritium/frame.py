@@ -460,16 +460,47 @@ class SplitFrame( Frame ):
     def splitbar_drag( self, event ):
         log.debug( "SplitFrame.splitbar_drag" )
         if self.split_dragging:
-            if self.vertical:
-                self.split = event.root_y - self.splitbar_drag_start
+            self.resize_point( event.root_x - self.splitbar_drag_start, event.root_y - self.splitbar_drag_start )
+
+    def resize_point( self, x, y ):
+        if self.vertical:
+            if self.split != y:
+                self.split = y
                 self.window.move( self.x, self.split )
                 self.frame1.moveresize( self.x, self.y, self.width, self.split )
                 self.frame2.moveresize( self.x, self.split+8, self.width, self.height - self.split - 8 )
-            else:
-                self.split = event.root_x - self.splitbar_drag_start
+        else:
+            if self.split != x:
+                self.split = x
                 self.window.move( self.split, self.y  )
                 self.frame1.moveresize( self.x, self.y, self.split, self.height )
                 self.frame2.moveresize( self.split+8, self.y, self.width - self.split - 8, self.height )
+
+    def resize_fraction( self, fraction ):
+        """
+        move the split bar to (frame_size * fraction) pixels
+
+        pre:
+            (fraction >= 0) and (fraction <= 1.0)
+        """
+        if self.vertical:
+            self.resize_point( 0, int(fraction * self.height) )
+        else:
+            self.resize_point( int(fraction * self.width), 0 )
+    
+
+    def resize_incr( self, incr ):
+        """
+        move the split bar to (frame_size * fraction) pixels
+
+        pre:
+            (fraction >= 0) and (fraction <= 1.0)
+        """
+        if self.vertical:
+            self.resize_point( 0, self.split + incr )
+        else:
+            self.resize_point( self.split + incr, 0 )
+    
 
     def remove_me( self, me ):
         log.debug( "SplitFrame.remove_me call for frame: %s with windows: %s" % ( self, self.windows )  )

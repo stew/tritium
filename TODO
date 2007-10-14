@@ -6,9 +6,6 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
   if there was a way to restart tritium (reread config, (redo
   layout?)) it would often be helpful
 
-* keyboard resizing
-  <dondelelcaro> stew: dragging is hard. ;-)
-
 * Add completion to query.py
   for instance, runCommand should show completions from expanding
   PATH, runSSH should show completions from known_hosts
