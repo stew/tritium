@@ -20,8 +20,10 @@ You can find the full GNU General Public Licence at
 or included with your favourite Linux Distribution.
 """
 
+#from setuptools import setup
 from distutils.core import setup
 import tritium
+
 
 # Call the setup() routine which does most of the work
 setup( name             = tritium.__distname__,
@@ -34,7 +36,23 @@ setup( name             = tritium.__distname__,
        license          = tritium.__license__,
        packages         = ['tritium'],
        scripts          = ['bin/tritium'],
-       data_files       = [('etc/X11/tritium', ['etc/keys.py', 'etc/layout.py']),
-                           ('share/applications', ['extras/tritium.desktop']),
-                           ]
+       data_files       = [ ('/etc/X11/', ['etc/keys.py', 'etc/layout.py']),
+                            ('share/applications', ['extras/tritium.desktop']),
+                            ],
+
+# why, oh why, can't i make this work
+#        entry_points="""
+#             [distutils.commands]
+#             install_config = tritium.install_config:install_config
+#         """,
+#        entry_points = {
+#         "distutils.commands": [
+#             "install_config = install_config:install_config",
+#             ],
+#         "distutils.setup_keywords": [
+#             "config_files = install_config:install_config",
+            
+
+#             ],
+#         },
 )
