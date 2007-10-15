@@ -8,7 +8,7 @@ import logging
 log = logging.getLogger()
 from tritium.identify import IdentifyWindow
 from tritium.workspace import Workspace
-from tritium.frame import SplitFrame
+from tritium.frame.split import SplitFrame
 
             
 """

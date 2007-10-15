@@ -379,3 +379,12 @@ class TitleClient:
         log.debug( "TitleClient.title_undraw" )
 	(x, y, width, height, borderwidth) = self.title_window.geometry()
         self.title_window.clear_area( width = width, height = height )
+
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+    print "DONE"

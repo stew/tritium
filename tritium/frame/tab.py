@@ -21,7 +21,6 @@ log = logging.getLogger()
 
 from Xlib import X, Xatom
 from plwm import wmevents
-from cycle import Cycle
 import frame
 import sys
 
@@ -38,7 +37,6 @@ class Tabs:
                 return index
 
         return len( self.tabs ) -1
-        
 
     # stew: you know better then to have both of these functions
     # looking so similar, please refactor, thanks -stew
@@ -429,3 +427,11 @@ class Tab:
             not self._deleted
         """
         self.window.clear_area( width = self.width )
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+    print "DONE"
