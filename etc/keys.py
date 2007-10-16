@@ -8,7 +8,9 @@ import logging
 log = logging.getLogger()
 from tritium.identify import IdentifyWindow
 from tritium.workspace import Workspace
-from tritium.frame import SplitFrame
+
+#from tritium.frame import SplitFrame
+from tritium.frame.split import SplitFrame
 
             
 """
@@ -216,19 +218,27 @@ class TritiumKeys(keys.KeyHandler):
 
     def S_M4_h( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.tritium_parent.find_frame_left( cw.frame ) )
+        f = cw.frame.tritium_parent.find_frame_left( cw.frame )
+        if f:
+            cw.move_to_frame( cw.frame.tritium_parent.find_frame_left( cw.frame ) )
 
     def S_M4_l( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.tritium_parent.find_frame_right( cw.frame ) )
+        f = cw.frame.tritium_parent.find_frame_right( cw.frame )
+        if f:
+            cw.move_to_frame( f )
 
     def S_M4_j( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.tritium_parent.find_frame_below( cw.frame ) )
+        f = cw.frame.tritium_parent.find_frame_below( cw.frame )
+        if f:
+            cw.move_to_frame( f )
 
     def S_M4_k( self, event ):
         cw = self.wm.current_frame().windows.current()
-        cw.move_to_frame( cw.frame.tritium_parent.find_frame_above( cw.frame ) )
+        f = cw.frame.tritium_parent.find_frame_above( cw.frame )
+        if f:
+            cw.move_to_frame( f )
 
     def M4_Tab( self, event ):
         self.wm.workspaces.current().next_frame()

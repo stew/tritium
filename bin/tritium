@@ -30,7 +30,7 @@ from plwm import wmanager, keys, inspect, \
 import logging
 import tritium
 import sys,os
-from tritium import tab,workspace,frame,title,dock
+from tritium import workspace,title,dock,frame
 from tritium.query import *
 from tritium.submap import SubMap
 from Xlib import XK 
@@ -47,7 +47,7 @@ class TritiumClient( wmanager.Client,
                      tritium.dock.DockClient,
 		     border.BorderClient,
 		     tritium.title.TitleClient,
-		     tritium.tab.TabClient,
+		     tritium.frame.tab.TabClient,
 		     tritium.frame.FrameClient,
 		     workspace.WorkspaceClient,
                      ):

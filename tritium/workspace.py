@@ -20,8 +20,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from cycle import Cycle
-from frame import FloatingFrame, TabbedFrame
+from frame.floating import FloatingFrame
+from frame.tabbed import TabbedFrame
 import logging
+
 log = logging.getLogger()
 
 FLOATING, TABBED = range( 2 )

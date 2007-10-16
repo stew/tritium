@@ -40,7 +40,7 @@ import logging
 from Xlib import X
 from plwm import wmanager, wmevents, modewindow
 from workspace import Workspace
-from frame import Frame
+from frame.frame import Frame
 from cycle import Cycle
 import query
 

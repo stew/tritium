@@ -21,8 +21,7 @@ log = logging.getLogger()
 
 from Xlib import X, Xatom
 from plwm import wmevents
-from cycle import Cycle
-import frame
+import tabbed
 import sys
 
 class Tabs:
@@ -38,7 +37,6 @@ class Tabs:
                 return index
 
         return len( self.tabs ) -1
-        
 
     # stew: you know better then to have both of these functions
     # looking so similar, please refactor, thanks -stew
@@ -165,12 +163,12 @@ class TabClient:
 
     def tab_get_focus(self, event):
         log.debug( "TabClient.tab_get_focus" )
-        if isinstance( self.wm.current_frame(), frame.TabbedFrame ):
+        if isinstance( self.wm.current_frame(), tabbed.TabbedFrame ):
             self.tab.tab_activate()
 
     def tab_lose_focus(self, event):
         log.debug( "TabClient.tab_lose_focus" )
-        if isinstance( self.wm.current_frame(), frame.TabbedFrame ):
+        if isinstance( self.wm.current_frame(), tabbed.TabbedFrame ):
             self.tab.tab_deactivate()
 
 
@@ -314,7 +312,7 @@ class Tab:
             f = self.frame.wm.workspaces.current().find_frame( event.root_x, event.root_y )
             if f and (f != self.frame):
                 log.debug( "tab_mouse_up: moving tab to %s" % f )
-                if isinstance( f, frame.TabbedFrame ):
+                if isinstance( f, tabbed.TabbedFrame ):
 
                     self.client.move_to_frame( f )
                     #self.client.tab_remove()
@@ -429,3 +427,11 @@ class Tab:
             not self._deleted
         """
         self.window.clear_area( width = self.width )
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+    print "DONE"
