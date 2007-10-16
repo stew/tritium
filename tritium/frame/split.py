@@ -45,11 +45,12 @@ class SplitFrame( Frame ):
 
         if vertical:
             self.frame1.moveresize( x, y, self.width, self.height - self.split )
-            self.frame2 = self.frame1.__class__( self.screen, self.x, self.split+4,
+            # this is a horrible hack to get around circular importing
+            self.frame2 = self.frame1.topmost_child().__class__( self.screen, self.x, self.y + self.split+4,
                                                  self.width, self.height-self.split-4)
         else:
             self.frame1.moveresize( x, y, self.width - self.split, self.height )
-            self.frame2 = self.frame1.__class__( self.screen, self.split+4, self.y,
+            self.frame2 = self.frame1.topmost_child().__class__( self.screen, self.x + self.split+4, self.y,
                                                  self.width-self.split-4, self.height)
 
         frame1.tritium_parent.replace_me( frame1, self )
@@ -74,14 +75,14 @@ class SplitFrame( Frame ):
 
         if self.vertical:
 #            self.split = height >> 1
-            self.window.moveresize( self.x, self.split, self.width, 4 )
+            self.window.moveresize( self.x, self.y + self.split, self.width, 4 )
             self.frame1.moveresize( self.x, self.y, self.width, self.split )
             self.frame2.moveresize( self.x, self.split+4, self.width, self.height - self.split - 4 )
         else:
 #            self.split = width >> 1
-            self.window.moveresize( self.split, self.y, 4, self.height )
+            self.window.moveresize( self.x + self.split, self.y, 4, self.height )
             self.frame1.moveresize( self.x, self.y, self.split, self.height )
-            self.frame2.moveresize( self.split+4, self.y, self.width - self.split - 4, self.height )
+            self.frame2.moveresize( self.x + self.split+4, self.y, self.width - self.split - 4, self.height )
 
         self.redraw( self )
 
@@ -116,10 +117,10 @@ class SplitFrame( Frame ):
     # these four below could probably be made smarter at some point,
     # like topmost could be topmost containing a certain x
     def topmost_child( self ):
-        return self.frame1
+        return self.frame1.topmost_child()
 
     def bottommost_child( self ):
-        return self.frame2
+        return self.frame2.bottommost_child()
 
     leftmost_child = topmost_child
     rightmost_child = bottommost_child
@@ -169,13 +170,13 @@ class SplitFrame( Frame ):
         
         if self.vertical:
             window = self.screen.root.create_window(
-                self.x, self.split, self.width, 8, 0,
+                self.x, self.y + self.split, self.width, 8, 0,
                 X.CopyFromParent, X.InputOutput, X.CopyFromParent,
                 event_mask = X.ExposureMask
                 )
         else:
             window = self.screen.root.create_window(
-                self.split, self.y, 8, self.height, 0,
+                self.x + self.split, self.y, 8, self.height, 0,
                 X.CopyFromParent, X.InputOutput, X.CopyFromParent,
                 event_mask = X.ExposureMask
                 )
@@ -237,17 +238,17 @@ class SplitFrame( Frame ):
 
     def resize_point( self, x, y ):
         if self.vertical:
-            if self.split != y:
-                self.split = y
-                self.window.move( self.x, self.split )
-                self.frame1.moveresize( self.x, self.y, self.width, self.split )
-                self.frame2.moveresize( self.x, self.split+8, self.width, self.height - self.split - 8 )
+            if self.split + self.y != y:
+                self.split = y - self.y
+                self.window.move( self.x, self.y + self.split )
+                self.frame1.moveresize( self.x, self.y, self.width, self.split + self.y )
+                self.frame2.moveresize( self.x, self.y + self.split+8, self.width, self.height - self.split - 8 )
         else:
             if self.split != x:
                 self.split = x
-                self.window.move( self.split, self.y  )
+                self.window.move( self.x + self.split, self.y  )
                 self.frame1.moveresize( self.x, self.y, self.split, self.height )
-                self.frame2.moveresize( self.split+8, self.y, self.width - self.split - 8, self.height )
+                self.frame2.moveresize( self.x + self.split+8, self.y, self.width - self.split - 8, self.height )
 
     def resize_fraction( self, fraction ):
         """
