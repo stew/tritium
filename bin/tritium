@@ -30,9 +30,11 @@ from plwm import wmanager, keys, inspect, \
 import logging
 import tritium
 import sys,os
-from tritium import workspace,title,dock,frame
+from tritium import workspace,dock
 from tritium.query import *
 from tritium.submap import SubMap
+import tritium.frame
+from tritium.frame import title,frame
 from Xlib import XK 
 
 log = logging.getLogger()
@@ -46,7 +48,7 @@ class TritiumMenuHandler(menu.MenuCharHandler):
 class TritiumClient( wmanager.Client,
                      tritium.dock.DockClient,
 		     border.BorderClient,
-		     tritium.title.TitleClient,
+		     tritium.frame.title.TitleClient,
 		     tritium.frame.tab.TabClient,
 		     tritium.frame.FrameClient,
 		     workspace.WorkspaceClient,
@@ -70,11 +72,11 @@ class LayoutScreen:
 class TritiumScreen( tritium.dock.DockScreen,
                      wmanager.Screen,
 		     color.Color,
+		     tritium.frame.title.TitleScreen,
                      LayoutScreen,
 		     message.screenMessage,
 		     tritium.tritiumScreen,
 		     menu.screenMenu,
-		     tritium.title.TitleScreen,
                      ):
     "And panes on the screen, and I'm going to want some menus."
 
@@ -117,7 +119,7 @@ class Tritium( wmanager.WindowManager,
                focus.SloppyFocus,
                font.Font,
                workspace.WorkspaceWindowManager,
-               frame.FrameWindowManager,
+               tritium.frame.FrameWindowManager,
                TritiumConfig,
                tritium.tritiumWindowManager,
                inspect.InspectServer,
