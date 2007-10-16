@@ -23,6 +23,7 @@ from cycle import Cycle
 from frame.floating import FloatingFrame
 from frame.tabbed import TabbedFrame
 import logging
+
 log = logging.getLogger()
 
 FLOATING, TABBED = range( 2 )

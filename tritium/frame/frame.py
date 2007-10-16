@@ -21,6 +21,7 @@ log = logging.getLogger()
 
 from plwm import wmevents
 from tritium.cycle import Cycle
+import tritium.workspace 
 
 class Frame( object ):
     """
@@ -44,7 +45,7 @@ class Frame( object ):
 
     def workspace( self ):
         "return the workspace this frame is part of"
-        if isinstance( self.tritium_parent, workspace.Workspace ):
+        if not isinstance( self.tritium_parent, Frame ):
             return self.tritium_parent
         else:
             return self.tritium_parent.workspace()

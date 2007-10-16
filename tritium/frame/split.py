@@ -1,5 +1,5 @@
 # split.py -- a frame split either vertically or horizontalliy
-# that contains two TabbedFrames
+# that contains two other frames
 #
 # Copyright 2007 Mike O'Connor <stew@vireo.org>
 #
@@ -19,12 +19,10 @@
 
 from Xlib import X, Xutil, Xatom
 
-from tabbed import TabbedFrame
 from frame import Frame
 
 import logging
 log = logging.getLogger()
-
 
 class SplitFrame( Frame ):
     """
@@ -47,12 +45,12 @@ class SplitFrame( Frame ):
 
         if vertical:
             self.frame1.moveresize( x, y, self.width, self.height - self.split )
-            self.frame2 = TabbedFrame( self.screen, self.x, self.split+4,
-                                       self.width, self.height-self.split-4)
+            self.frame2 = self.frame1.__class__( self.screen, self.x, self.split+4,
+                                                 self.width, self.height-self.split-4)
         else:
             self.frame1.moveresize( x, y, self.width - self.split, self.height )
-            self.frame2 = TabbedFrame( self.screen, self.split+4, self.y,
-                                       self.width-self.split-4, self.height)
+            self.frame2 = self.frame1.__class__( self.screen, self.split+4, self.y,
+                                                 self.width-self.split-4, self.height)
 
         frame1.tritium_parent.replace_me( frame1, self )
 
