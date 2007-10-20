@@ -34,7 +34,7 @@ from tritium import workspace,dock
 from tritium.query import *
 from tritium.submap import SubMap
 import tritium.frame
-from tritium.frame import title,frame
+from tritium.frame import title,frame,tab
 from Xlib import XK 
 
 log = logging.getLogger()
