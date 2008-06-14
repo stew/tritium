@@ -3,7 +3,7 @@
 Just run "python setup.py install" to install tritium
 Iron setup script
 
-Copyright (C) 2007 Mike O'Connor <stew@vireo.org>
+Copyright (C) 2007,2008 Mike O'Connor <stew@vireo.org>
  
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -34,9 +34,9 @@ setup( name             = tritium.__distname__,
        author_email     = tritium.__email__,
        url              = tritium.__url__,
        license          = tritium.__license__,
-       packages         = ['tritium'],
+       packages         = ['tritium', 'tritium.frame'],
        scripts          = ['bin/tritium'],
-       data_files       = [ ('/etc/X11/', ['etc/keys.py', 'etc/layout.py']),
+       data_files       = [ ('/etc/X11/tritium/', ['etc/keys.py', 'etc/layout.py']),
                             ('share/applications', ['extras/tritium.desktop']),
                             ],
 

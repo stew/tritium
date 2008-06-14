@@ -1,9 +1,9 @@
 # submap.py -- a keyboard "submap" for creating prefix keybindings
 #
-# Copyright 2007 Mike O'Connor <stew@vireo.org>
+# Copyright 2007,2008 Mike O'Connor <stew@vireo.org>
 #
 # Portions of code plagarized from plwm's panes.py which is
-#    Copyright (C) 2001  Mike Meyer <mwm@mired.org>
+#    Copyright (C,2008) 2001  Mike Meyer <mwm@mired.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

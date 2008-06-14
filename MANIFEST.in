@@ -1,5 +1,5 @@
 include README
-include INSTALL
+include COPYING
 include TODO
 include setup.py
 include bin/tritium
@@ -8,3 +8,4 @@ include etc/keys.py
 include etc/layout.py
 include extras/tritium.desktop
 include tritium/*.py
+include tritium/frame/*py

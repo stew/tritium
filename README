@@ -1,17 +1,73 @@
 tritium -- a tabbed/tiling window manager.
 
 tritium is a tiling/tabbed window manager for the X Window System
-inspired by the ion window manager.  It was written completely from
-scratch in python and shares no actual code with ion.
+inspired by the ion3 window manager.  It was written completely from
+scratch in python and shares no actual code with ion3.
 
 tritium is implemented in python using the plwm ("pointless window
 manager") library, which is available here:
  	http://plwm.sourceforge.net
 
-please read INSTALL for installation instructions
+INSTALLATION
+------------
 
-Configuration for tritium is by default in /etc/X11/tritium/config,
-you can override this by copying this file to $HOME/.tritium or
-$HOME/.config/tritium
+run "python setup.py install" to install tritium.
+
+
+CONFIGURATION
+-------------
+
+Configuration for tritium is curretly done in two files, layout.py and
+keys.py.  By default, these files are installed to /etc/X11/tritium. 
+When tritium starts it will search the following directories for these 
+files:
+    $HOME/.config/tritum/
+    $HOME/.tritium/
+    /usr/local/etc/tritium
+    /usr/local/ext/X11/tritium
+    /etc/tritium
+    /etc/X11/tritium
+
+It is recommended that if you are going to customize the configuration
+(which is recommended!) that you do it by first copying layout.py and
+keys.py to $HOME/.config/tritum/ or $HOME/.tritium.
+
+keys.py
+-------
+
+This file should define a python class named TritiumKeys which will
+provide the keybindings for the window manager. Binding a key is done
+by declaring a function with the name of the keysym you are binding. A
+function named 'k' will be called when a key event is received for the
+'k' key.  Modifier keys can preceed the keysym, separated by
+underscores (_).
+
+ s means shift
+ c means control
+ m means meta (modifier 1)
+ m1,m2,m3,m4,m5 mean Mod1,Mod2,Mod3,Mod4
+ any means any comination of modifiers or no modifiers
+
+So, for example a function named s_c_F1 would create a key binding for
+the key combination Shift + Control + F1.
+
+layout.py
+---------
+
+This file should define a python class named TritiumLayout, which is
+responsible for initial setup of the workspaces / frames, and is
+responsible for deciding on the placement of new windows.
+
+When each screen is initialized, a function named screen_N will be
+called, where N is the screen number.  This function will be able to
+do the initial layout of the screen.  I use this function to create a
+couple of workspaces, some with a split pane, and to allocate a dock
+area at the bottom where I run a gnome-panel.
+
+When new windows mapped, a function named "which_frame" is called with
+the new window, and it is expected that the function will return a
+frame which should contain the window, or None to indicate that the
+window be placed into the current frame.
+
 
 -- Mike O'Connor <stew@vireo.org>

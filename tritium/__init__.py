@@ -18,15 +18,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
 __distname__ = 'tritium'
-__version__ = '0.3.3'
+__version__ = '0.3.5'
 __description__ = 'a tabbed/tiling window manager'
 __long_description__ = \
 """
 tritium is a tiling/tabbed window manager for the X Window System
 inspired by the ion window manager.  It was written completely from
-scratch in python and shares no actual code with ion.
+scratch in Python and shares no actual code with ion.
 
-tritium is implemented in python using the plwm ("pointless window
+tritium is implemented in Python using the plwm ("pointless window
 manager") library, which is available here:
  	http://plwm.sourceforge.net
 """

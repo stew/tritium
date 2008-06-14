@@ -5,7 +5,7 @@ from Xlib import X
 
 log = logging.getLogger()
 
-class TritiumLayout:
+class TritiumLayout(object):
 
     def screen_0( self, screen ):
         """ 
@@ -30,10 +30,6 @@ class TritiumLayout:
         screen.wm.set_current_workspace( 0 )
         wm.current_frame().split_horizontally()
 
-    xterm_re = re.compile( 'xterm',re.IGNORECASE )
-    firefox_re = re.compile( 'firefox',re.IGNORECASE )
-    emacs_re = re.compile( 'emacs',re.IGNORECASE )
-    music_re = re.compile( 'music',re.IGNORECASE )
     gnome_panel_re = re.compile( 'Gnome-panel',re.IGNORECASE )
 
     def which_frame( self, client ):
@@ -46,17 +42,40 @@ class TritiumLayout:
         if( self.gnome_panel_re.match( appclass ) ):
             client.dockapp = True
 
-        if( self.firefox_re.match( appclass ) ):
-            ws = client.wm.get_workspace_by_name( "web" )
-            if ws:
-                return ws.current_frame
 
-        elif( self.emacs_re.match( appclass ) ):
-            ws = client.wm.get_workspace_by_name( "emacs" )
-            if ws:
-                return ws.current_frame
+        # By default, we return None, which causes the window to show
+        # up in the current frame
+        return None
+    
 
-        elif( self.music_re.match( appname ) ):
-            ws = client.wm.get_workspace_by_name( "client" )
-            if ws:
-                return ws.current_frame
+# Here is the which_frame implementation I use, which shows how you
+# can map new clients to particular workspaces or frames
+#  
+#     xterm_re = re.compile( 'xterm',re.IGNORECASE )
+#     firefox_re = re.compile( 'firefox',re.IGNORECASE )
+#     emacs_re = re.compile( 'emacs',re.IGNORECASE )
+#     music_re = re.compile( 'music',re.IGNORECASE )
+#     def which_frame( self, client ):
+#         """
+#         which_frame is called for each new client that is created.  It
+#         gives us a chance to decide where the new client should be placed
+#         """
+#         (appname, appclass) = client.window.get_wm_class()
+
+#         if( self.gnome_panel_re.match( appclass ) ):
+#             client.dockapp = True
+
+#         if( self.firefox_re.match( appclass ) ):
+#             ws = client.wm.get_workspace_by_name( "web" )
+#             if ws:
+#                 return ws.current_frame
+
+#         elif( self.emacs_re.match( appclass ) ):
+#             ws = client.wm.get_workspace_by_name( "emacs" )
+#             if ws:
+#                 return ws.current_frame
+
+#         elif( self.music_re.match( appname ) ):
+#             ws = client.wm.get_workspace_by_name( "client" )
+#             if ws:
+#                 return ws.current_frame

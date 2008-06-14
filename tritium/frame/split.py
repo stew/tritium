@@ -1,7 +1,7 @@
 # split.py -- a frame split either vertically or horizontalliy
 # that contains two other frames
 #
-# Copyright 2007 Mike O'Connor <stew@vireo.org>
+# Copyright 2007,2008 Mike O'Connor <stew@vireo.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
