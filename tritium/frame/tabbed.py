@@ -1,6 +1,6 @@
 # tabbed.py -- a container for maximized clients with tabs across the top
 #
-# Copyright 2007 Mike O'Connor <stew@vireo.org>
+# Copyright 2007,2008 Mike O'Connor <stew@vireo.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -79,7 +79,15 @@ class TabbedFrame( Frame ):
         """
         log.debug( "TabbedFrame.place_window: %s " % window.get_title() )
         if not window: window = self.windows.current()
-        window.moveresize( self.x, self.y + self.screen.title_height, self.width-2, self.height-self.screen.title_height-2)
+	transient=False
+	try:
+	    transient = window.window.get_wm_transient_for()
+	except:
+	    pass
+        if( transient ):
+            window.move( self.x, self.y + self.screen.title_height )
+        else:
+            window.moveresize( self.x, self.y + self.screen.title_height, self.width-2, self.height-self.screen.title_height-2)
         window.hidden = False # ugh, i don't like having to set it here, but this seems to be before __client_init__ is called
         if not self.visible():
             window.hide()
