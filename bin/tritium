@@ -134,6 +134,21 @@ class Tritium( wmanager.WindowManager,
     client_class = TritiumClient
     screen_class = TritiumScreen
 
+    def restart( self ):
+        """
+        replace the current tritium process with a new one, this will
+        allow us to reread the config files without having to restart
+        X, but will have the annoying side-effect of repositioning
+        winodws.  so there is obviosly room for improvement
+        """
+        executable = sys.argv[0]
+        if sys.argv[0].find( '/' ):
+            # it is a relative path, so run it from pwd
+            executable = os.path.join( os.getcwd(), executable )
+
+        log.info( "going to try to restart tritium by running execvp( %s )" % executable )
+        os.execvp( executable, sys.argv[1:] )
+
 if __name__ == '__main__':
     os.environ[ "DISPLAY" ] = ":0"
 

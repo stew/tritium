@@ -1,3 +1,9 @@
+tritium (0.3.8)
+
+  * add wm.restart() using execvp to restart tritium (Thanks Clint)
+
+ -- Mike O'Connor <stew@debian.org>  Wed, Jun 18 2008 10:04:48 -0400
+
 tritium (0.3.7)
 
   * oops, the 0.3.6 fix for transients got reverted when doing dockapp stuff
