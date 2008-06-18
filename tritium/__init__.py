@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
 __distname__ = 'tritium'
-__version__ = '0.3.5'
+__version__ = '0.3.7'
 __description__ = 'a tabbed/tiling window manager'
 __long_description__ = \
 """
@@ -43,10 +43,11 @@ from workspace import Workspace
 from frame.frame import Frame
 from cycle import Cycle
 import query
+import traceback
 
 log = logging.getLogger()
 
-class tritiumScreen:
+class tritiumScreen(object):
     "tritium mixin for Screens."
 
     def  __screen_client_init__( self ):
@@ -80,7 +81,7 @@ class tritiumScreen:
         frame.width = self.root_width
         frame.height = self.root_height
 
-class tritiumWindowManager:
+class tritiumWindowManager(object):
     """
     tritium window manager mixin
     """
@@ -97,7 +98,7 @@ class tritiumWindowManager:
     #TODO: figure out what this is all about:
         Frame.activate = Frame._activate
 
-    class actions_menu:
+    class actions_menu(object):
         def __init__( self, client ):
             width, height = client.screen.menu_make( [ 'close', client.delete ] )
                     
@@ -105,7 +106,7 @@ class tritiumWindowManager:
         def __call__( self, choice ):
             pass
 
-    class appmenu:
+    class appmenu(object):
         "Creates a menu of applications to run in a pane."
 
         def __init__( self, wm, apps ):

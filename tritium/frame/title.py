@@ -24,7 +24,7 @@ from plwm import wmevents
 
 import frame
 
-class TitleScreen:
+class TitleScreen(object):
 
     def __screen_client_init__(self):
 
@@ -65,7 +65,7 @@ class TitleScreen:
 	self.title_base = self.title_height / 2 + font_center
 
 # Client mixin
-class TitleClient:
+class TitleClient(object):
     """
     This class is a client mixing for floating windows which have a titlebar.
     It will create a new top level window to contain both the client

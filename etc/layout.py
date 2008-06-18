@@ -39,9 +39,9 @@ class TritiumLayout(object):
         """
         (appname, appclass) = client.window.get_wm_class()
 
-        if( self.gnome_panel_re.match( appclass ) ):
+        if( "Conky" == appclass or self.gnome_panel_re.match( appclass ) ):
             client.dockapp = True
-
+            return None
 
         # By default, we return None, which causes the window to show
         # up in the current frame

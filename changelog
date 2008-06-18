@@ -1,0 +1,12 @@
+tritium (0.3.7)
+
+  * oops, the 0.3.6 fix for transients got reverted when doing dockapp stuff
+
+ -- Mike O'Connor <stew@debian.org>  Wed, Jun 18 2008 09:11:48 -0400
+	
+tritium (0.3.6)
+
+  * Don't force transient windows to frame size
+  * Fixes for dockapp to make conky work
+
+ -- Mike O'Connor <stew@debian.org>  Sun, 15 Jun 2008 14:15:42 -0400

@@ -28,7 +28,7 @@ log = logging.getLogger()
 
 FLOATING, TABBED = range( 2 )
 
-class WorkspaceWindowManager:
+class WorkspaceWindowManager(object):
     """
     window manager mixin for a wm with workspaces
     """
@@ -83,7 +83,7 @@ class WorkspaceWindowManager:
         self.set_current_workspace( index )
         return ws
 
-class OnTopFilter:
+class OnTopFilter(object):
     def __call__( self, client ):
         try:
             return client.__getattribute__( 'on_top' )
@@ -91,7 +91,7 @@ class OnTopFilter:
             return False
         
 
-class WorkspaceClient:
+class WorkspaceClient(object):
     def __client_init__( self ):
         log.debug( "WorkspaceClient.__client_init__: %s" % self )
         if not self.dockapp:
@@ -117,11 +117,11 @@ class WorkspaceClient:
             self.move( self.hide_x,self.hide_y )
             self.hidden = False
         
-class WorkspaceScreen:
+class WorkspaceScreen(object):
     def __screen_init__( self ):
         pass
 
-class Workspace:
+class Workspace(object):
     def __init__( self, screen, type=TABBED, name="" ):
         log.debug( "Workspace.__init__" )
         self.name = name

@@ -23,6 +23,7 @@ from frame import Frame
 from split import SplitFrame
 from tab import Tabs, Tab
 from Xlib import X
+from plwm.frame import FrameProxy
 
 class TabbedFrame( Frame ):
     def __init__( self, screen, x, y, width, height ):
@@ -79,15 +80,49 @@ class TabbedFrame( Frame ):
         """
         log.debug( "TabbedFrame.place_window: %s " % window.get_title() )
         if not window: window = self.windows.current()
-	transient=False
-	try:
-	    transient = window.window.get_wm_transient_for()
-	except:
-	    pass
-        if( transient ):
-            window.move( self.x, self.y + self.screen.title_height )
+
+        if( window.transient ):
+#            width, height = window.follow_size_hints(self.width - 2, self.height - 2)
+            width, height = window.width, window.height
+
+            log.debug( "transient window: (W x H): %d, %d ; my ( W x H ): %d, %d" % (width,height,self.width,self.height ) )
+
+            if not window.gravity:
+                window.gravity = X.SouthGravity
+
+            width = min( width, self.width-self.screen.title_height - 2 )
+            height = min( height, self.height-2 )
+
+            if window.gravity in ( X.NorthEastGravity, 
+                                   X.EastGravity,
+                                   X.SouthEastGravity):
+                x = self.x
+            elif window.gravity in ( X.NorthGravity, 
+                                     X.CenterGravity,
+                                     X.SouthGravity ):
+                x = self.x + ( self.width - width - 2 ) / 2
+            else:
+                x = self.x + self.width - width - 1
+
+            if window.gravity in ( X.NorthEastGravity, 
+                                   X.NorthGravity,
+                                   X.NorthWestGravity):
+                y = self.y + self.screen.title_height + 2
+
+            elif window.gravity in ( X.EastGravity, 
+                                     X.CenterGravity,
+                                     X.WestGravity ):
+                y = self.y + self.screen.title_height + ( self.height - height - 2 ) / 2
+            else:
+                y = self.y + self.screen.title_height + self.height - height - 1
+
+            window.moveresize( x, y, width, height )
+#            window.frameProxy = FrameProxy( self.screen, window )
+            log.debug( "placing transient window: (W x H): %d, %d ; (x,y: %d, %d" % (width,height,x,y ) )
         else:
             window.moveresize( self.x, self.y + self.screen.title_height, self.width-2, self.height-self.screen.title_height-2)
+
+
         window.hidden = False # ugh, i don't like having to set it here, but this seems to be before __client_init__ is called
         if not self.visible():
             window.hide()

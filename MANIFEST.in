@@ -9,3 +9,4 @@ include etc/layout.py
 include extras/tritium.desktop
 include tritium/*.py
 include tritium/frame/*py
+include changelog

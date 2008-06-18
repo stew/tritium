@@ -26,7 +26,7 @@ TOP = 'top'
 LEFT = 'left'
 RIGHT = 'right'
 
-class DockScreen:
+class DockScreen(object):
     def __screen_init__( self ):
         self.dock_windows = []
         self.dock_size = 0
@@ -39,7 +39,7 @@ class DockScreen:
         dock_windows.append( client )
 
 # Client mixin
-class DockClient:
+class DockClient(object):
     """
     This class is a client mixin for window that provides an IconWindow
 

@@ -19,7 +19,7 @@ class XineramaQueryScreenInfo(rq.ReplyRequest):
                         rq.Pad( 20 ),
                         rq.List( 'screen_info', XineramaScreenInfo ) )
 
-class Xinerama:
+class Xinerama(object):
     def __init__( self, display ):
         self.extension = display.query_extension( "XINERAMA" )
     

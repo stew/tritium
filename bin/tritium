@@ -45,21 +45,28 @@ class TritiumMenuHandler(menu.MenuCharHandler):
     Any_space = Any_Down = C_n = menu.MenuKeyHandler._down
     Any_BackSpace = Any_Up = C_p = menu.MenuKeyHandler._up
 
-class TritiumClient( wmanager.Client,
-                     tritium.dock.DockClient,
+class TritiumClient( tritium.dock.DockClient,
+                     tritium.frame.FrameClient,
+                     tritium.frame.tab.TabClient,
+                     wmanager.Client,
+		     workspace.WorkspaceClient,
 		     border.BorderClient,
 		     tritium.frame.title.TitleClient,
-		     tritium.frame.tab.TabClient,
-		     tritium.frame.FrameClient,
-		     workspace.WorkspaceClient,
                      ):
     "Put the clients in a frame, with a border."
-
     border_default_width = 1
     border_color_name = 'White'
     border_focuscolor_name = 'White'
 
-class LayoutScreen:
+    def __init__(self, screen, window, maprequest):
+        self.transient=False
+        self.dockapp=False
+
+        tritium.frame.FrameClient.__init__( self, screen, window, maprequest )
+        wmanager.Client.__init__( self, screen, window, maprequest )
+        log.debug( "window is transient? %s" % self.transient )
+
+class LayoutScreen(object):
     def __screen_client_init__( self ):
         import layout
         self.layout = layout.TritiumLayout()
@@ -85,7 +92,7 @@ class TritiumScreen( tritium.dock.DockScreen,
     message_bordercolor = "Blue"
 
 
-class TritiumConfig:
+class TritiumConfig(object):
     def __wm_screen_init__( self ):
         log.debug( "TritiumConfig.__wm_screen_init__" )
         # the directories we searce for keys.py and layout.py in reverse order:
@@ -138,7 +145,7 @@ if __name__ == '__main__':
                 import contract
                 contract.checkmod(tab)
                 level=logging.DEBUG
-                wmanager.debug = wmanager.do_debug
+#                wmanager.debug = wmanager.do_debug
             else:
                 usage()
         else:

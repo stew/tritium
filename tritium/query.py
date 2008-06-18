@@ -40,7 +40,7 @@ class MyEditHandler(input.InputKeyHandler):
     Left = input.InputKeyHandler._back
     Right = input.InputKeyHandler._forw
     
-class query:
+class query(object):
     "base class for queries"
     def __init__( self, prompt ):
         self.history = []

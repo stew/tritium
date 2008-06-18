@@ -23,7 +23,7 @@ log = logging.getLogger()
 A list with a rotating iterator
 """
 
-class Cycle:
+class Cycle(object):
     """
     >>> f=Cycle()
     >>> f.append(1)

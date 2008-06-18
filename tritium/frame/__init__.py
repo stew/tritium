@@ -19,10 +19,14 @@
 import logging
 log = logging.getLogger()
 
+from Xlib import X
 from plwm import wmevents
+from plwm.frame import FrameProxy
+import traceback
 
 class FrameWindowManager( object ):
     def find_me_a_home( self, client ):
+
         frame = client.screen.layout.which_frame( client )
         if frame:
             return frame
@@ -37,11 +41,29 @@ class FrameClient( object ):
         self._check_frame_state()
        
     """
+    #TODO: find me a home:
+    default_gravity = X.SouthGravity
+
+    def __init__(self, screen, window, maprequest):
+	try:
+	    transient = window.get_wm_transient_for()
+            if transient:
+                log.debug( "TRANSIENT" )
+                self.transient = True
+            else:
+                log.debug( "NOT TRANSIENT" )
+	except:
+            traceback.print_exc()
+	    pass
+
+        self.gravity = self.default_gravity
+
     def __client_init__( self ):
         log.debug( "FrameClient.__client_init__" )
         frame = self.wm.find_me_a_home( self )
         if self.dockapp:
             self.frame = None
+            self.dock_manage()
         else:
             self.frame_dragging = False
             self.add_to_frame( frame )

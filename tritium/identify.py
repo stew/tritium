@@ -25,7 +25,7 @@ from plwm import wmanager, event, keys
 from submap import SubMap
 import threading
 
-class IdentifyWindow:
+class IdentifyWindow(object):
     """
     A window to display properties about a client
     """

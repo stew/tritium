@@ -20,11 +20,11 @@ import logging
 log = logging.getLogger()
 
 from Xlib import X, Xatom
-from plwm import wmevents
+from plwm import wmevents, wmanager
 import tabbed
 import sys
 
-class Tabs:
+class Tabs(object):
     def __init__( self, frame ):
         log.debug( "Tabs.__init__" )
         self.tabs = []
@@ -120,7 +120,8 @@ class Tabs:
             x += width+2
 
 # Client mixin
-class TabClient:
+from plwm.frame import FrameProxy
+class TabClient(object):
     def __client_init__(self):
         log.debug( "TabClient.__client_init__" )
         self.tab_managed = False
@@ -182,7 +183,7 @@ class TabClient:
             self.tab._deleted = True
 
 
-class Tab:
+class Tab(object):
     def __init__( self, frame, client ):
         log.debug( "Tab.__init__" )
         self.frame = frame
