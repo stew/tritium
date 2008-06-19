@@ -64,7 +64,6 @@ class TritiumClient( tritium.dock.DockClient,
 
         tritium.frame.FrameClient.__init__( self, screen, window, maprequest )
         wmanager.Client.__init__( self, screen, window, maprequest )
-        log.debug( "window is transient? %s" % self.transient )
 
 class LayoutScreen(object):
     def __screen_client_init__( self ):

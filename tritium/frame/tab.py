@@ -31,7 +31,6 @@ class Tabs(object):
         self.frame = frame
 
     def _current_index( self ):
-        log.debug( "tabs._current_index" )
         for index in range( len( self.tabs ) ):
             if self.tabs[index].active:
                 return index
@@ -41,7 +40,6 @@ class Tabs(object):
     # stew: you know better then to have both of these functions
     # looking so similar, please refactor, thanks -stew
     def next( self ):
-        log.debug( "Tabs.next" )
         if len( self.tabs ):
             i = self._current_index()
             current_tab = self.tabs[ i ]
@@ -49,7 +47,6 @@ class Tabs(object):
             self.tabs[ i ].activate_client()
         
     def prev( self ):
-        log.debug( "Tabs.prev" )
         if len( self.tabs ):
             i = self._current_index()
             current_tab = self.tabs[ i ]
@@ -57,7 +54,6 @@ class Tabs(object):
             self.tabs[ i ].activate_client()
         
     def append( self, tab ):
-        log.debug( "Tabs.append" )
         self.tabs.insert( self._current_index()+1, tab )
         self.resize_tabs()
 
@@ -68,8 +64,6 @@ class Tabs(object):
         post:
             not self._contains( tab )
         """
-        log.debug( "Tabs.remove" )
-        log.debug( "removing tab: %s from 'tabs' %s with tabs: %s" % (object.__str__(tab),self,self.tabs))
         self.tabs.remove( tab )
         self.resize_tabs()
         
@@ -82,37 +76,31 @@ class Tabs(object):
             return False
 
     def remove_all( self ):
-        log.debug( "Tabs.remove_all" )
         for tab in self.tabs:
             tab.tab_remove()
         self.tabs = []
         
     def tab_redraw( self ):
-        log.debug( "Tabs.tab_redraw" )
         for tab in self.tabs:
             tab.tab_draw()
 
     def show( self ):
-        log.debug( "Tabs.show" )
         for tab in self.tabs:
             tab.show()
 
         self.resize_tabs()
 
     def hide( self ):
-        log.debug( "Tabs.hide" )
         for tab in self.tabs:
             tab.hide()
 
     def _tab_width( self ):
-        log.debug( "Tabs._tab_width" )
         if len( self.tabs ):
             return (self.frame.width-( (len( self.tabs ) -1) * 2 ))/ len( self.tabs )
         else:
             return 0
 
     def resize_tabs( self ):
-        log.debug( "Tabs.resize_tabs" )
         width = self._tab_width()
         x = self.frame.x
         for tab in self.tabs:
@@ -147,7 +135,6 @@ class TabClient(object):
 
     def tab_unmanage( self ):
         log.debug( "tab_unmanage" )
-
         self.tab_managed = False
 	self.dispatch.remove_handler( self.tab_property_notify)
         self.dispatch.remove_handler( self.tab_get_focus)
@@ -163,22 +150,18 @@ class TabClient(object):
                 pass
 
     def tab_get_focus(self, event):
-        log.debug( "TabClient.tab_get_focus" )
         if isinstance( self.wm.current_frame(), tabbed.TabbedFrame ):
             self.tab.tab_activate()
 
     def tab_lose_focus(self, event):
-        log.debug( "TabClient.tab_lose_focus" )
         if isinstance( self.wm.current_frame(), tabbed.TabbedFrame ):
             self.tab.tab_deactivate()
 
 
     def tab_remove(self, event=None):
-        log.debug( "TabClient.tab_remove" )
         self.tab_unmanage()
         if self.tab:
             self.frame.tabs.remove( self.tab )
-            log.debug( "going to remove tab: %s" % self.tab )
             self.tab.tab_remove()
             self.tab._deleted = True
 
@@ -205,8 +188,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.create_tab_window" )
-        
         if self.width:
             window = self.frame.screen.root.create_window(
                 x, self.frame.y, self.width, self.frame.screen.title_height, 0,
@@ -237,7 +218,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.show" )
         self.window.map();
 
     def _tab_create_gcs( self, window ):
@@ -245,7 +225,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab._tab_create_gcs" )
         self.on_fg_gc = window.create_gc(foreground =
                                          self.frame.screen.title_on_fg,
                                          background =
@@ -272,9 +251,7 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.activate_client" )
 	(x, y, width, height, borderwidth) = self.window.geometry()
-        log.debug( "raising clieng with geometry: (%d,%d,%d,%d) " % (x,y,width,height ))
 	self.client.raisewindow()
         self.client.workspace.raisewindows() # raise the "alwaysontop" windows
 	self.window.raisewindow()
@@ -285,7 +262,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_mouse_down: %s" % event )
         if( event.detail == 1 ):
             self.tab_dragging = True
             self.window.dispatch.add_handler( X.ButtonRelease, self.tab_mouse_up ) 
@@ -304,7 +280,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_mouse_up" )
         self.window.dispatch.remove_handler( self.tab_mouse_up ) 
         self.window.dispatch.remove_handler( self.tab_drag )        
         self.frame.wm.display.ungrab_pointer( X.CurrentTime )
@@ -312,7 +287,6 @@ class Tab(object):
             self.tab_dragging = False
             f = self.frame.wm.workspaces.current().find_frame( event.root_x, event.root_y )
             if f and (f != self.frame):
-                log.debug( "tab_mouse_up: moving tab to %s" % f )
                 if isinstance( f, tabbed.TabbedFrame ):
 
                     self.client.move_to_frame( f )
@@ -340,7 +314,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_remove: %s and my window: %s" % (self,self.window) )
         if self.window:
             self.window.destroy()
 
@@ -349,7 +322,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_activate" )
         if not self.active:
             self.active = True
             self.tab_draw()
@@ -359,7 +331,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_deactivate" )
         if self.active:
             self.active = False
             self.tab_draw()
@@ -380,7 +351,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.set_text" )
 	if text == self.text:
 	    return
 
@@ -393,7 +363,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.tab_draw: %s" % self )
 	if not self.text:
 	    return
 

@@ -59,7 +59,6 @@ class tritiumScreen(object):
 #        ws = self.wm.new_workspace( self )
 
     def configure_frame( self, event ):
-        log.debug( "tritiumScreen.configure_frame" )
         w = self.get_window( event.window )
         if w:
             if event.value_mask & (X.CWX | X.CWY | X.CWWidth | X.CWHeight):
@@ -72,7 +71,6 @@ class tritiumScreen(object):
                     w.frame.place_window( w )
 
     def maximize_frame( self, frame ):
-        log.debug( "tritiumScreen.maximize_frame" )
         "Make the pane use the all the available screen."
 
         # todo, make root for a toolbar/statusbar?

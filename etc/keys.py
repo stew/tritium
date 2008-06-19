@@ -151,11 +151,9 @@ class TritiumKeys(keys.KeyHandler):
 
     def M4_s( self, event ):
         self.wm.current_frame().split_vertically()
-        log.debug( "after split command: " + str( self.wm.workspaces.current() ) )
 
     def M4_S_s( self, event ):
         self.wm.current_frame().split_horizontally()
-        log.debug( "after split command: " + str( self.wm.workspaces.current() ) )
 
     def M4_h( self, event ):
         self.wm.current_frame().prev()

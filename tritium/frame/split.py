@@ -61,13 +61,11 @@ class SplitFrame( Frame ):
         self.create_split_window()
 
     def _activate(self):
-        log.debug( "SplitFrame._activate" )
         Frame._activate( self )
         self.window.raisewindow()
     activate=_activate
 
     def moveresize( self, x, y, width, height ):
-        log.debug( "SplitFrame.moveresize" )
         self.x = x
         self.y = y
         self.width = width
@@ -87,28 +85,24 @@ class SplitFrame( Frame ):
         self.redraw( self )
 
     def find_frame_right( self, frame ):
-        log.debug( "SplitFrame.find_frame_right" )
         if not self.vertical and self.frame1 == frame:
             return self.frame2.leftmost_child()
         else:
             return self.tritium_parent.find_frame_right( self )
 
     def find_frame_left( self, frame ):
-        log.debug( "SplitFrame.find_frame_left" )
         if not self.vertical and self.frame2 == frame:
             return self.frame1.rightmost_child()
         else:
             return self.tritium_parent.find_frame_left( self )
 
     def find_frame_above( self, frame ):
-        log.debug( "SplitFrame.find_frame_above" )
         if self.vertical and self.frame2 == frame:
             return self.frame1.bottommost_child()
         else:
             return self.tritium_parent.find_frame_above( self )
 
     def find_frame_below( self, frame ):
-        log.debug( "SplitFrame.find_frame_below" )
         if self.vertical and self.frame1 == frame:
             return self.frame2.topmost_child()
         else:
@@ -126,21 +120,18 @@ class SplitFrame( Frame ):
     rightmost_child = bottommost_child
 
     def hide( self ):
-        log.debug( "SplitFrame.hide" )
         Frame.hide( self )
         self.frame1.hide()
         self.frame2.hide()
         self.window.unmap()
 
     def show( self ):
-        log.debug( "SplitFrame.hide" )
         Frame.show( self )
         self.frame1.show()
         self.frame2.show()
         self.window.map()
 
     def find_frame( self, x, y ):
-        log.debug( "SplitFrame.find_frame" )
         if ( self.x <= x ) and \
            ( self.y <= y ) and \
            ((self.x+self.width) >= x ) and \
@@ -155,19 +146,15 @@ class SplitFrame( Frame ):
             return r
 
     def next_sibling_frame( self, frame ):
-        log.debug( "SplitFrame.next_sibling_frame" )
         if frame == self.frame1:
             return self.frame2.first_child_frame()
         else:
             return self.next_frame()
 
     def first_child_frame( self ):
-        log.debug( "SplitFrame.first_child_frame" )
         return self.frame1.first_child_frame()
 
     def create_split_window( self ):
-        log.debug( "SplitFrame.create_split_window" )
-        
         if self.vertical:
             window = self.screen.root.create_window(
                 self.x, self.y + self.split, self.width, 8, 0,
@@ -192,7 +179,6 @@ class SplitFrame( Frame ):
         self._create_gcs( window )
 
     def _create_gcs( self, window ):
-        log.debug( "SplitFrame._create_gcs" )
         self.split_gc1 = window.create_gc( foreground =
                                            self.screen.get_color( "#ffffff" ))
 
@@ -207,7 +193,6 @@ class SplitFrame( Frame ):
 
 
     def redraw( self, event = None ):
-        log.debug( "SplitFrame.redraw" )
         if self.vertical:
             self.window.fill_rectangle( self.split_gc1, 0, 0, self.width, 2 )
             self.window.fill_rectangle( self.split_gc2, 0, 2, self.width, 2 )
@@ -220,7 +205,6 @@ class SplitFrame( Frame ):
             self.window.fill_rectangle( self.split_gc4, 6, 0, 2, self.height )
 
     def splitbar_mouse_down( self, event ):
-        log.debug( "SplitFrame.splitbar_mouse_down" )
         self.split_dragging = True
         if self.vertical:
             self.splitbar_drag_start = event.root_y - self.split
@@ -228,11 +212,9 @@ class SplitFrame( Frame ):
             self.splitbar_drag_start = event.root_x - self.split
 
     def splitbar_mouse_up( self, event ):
-        log.debug( "SplitFrame.splitbar_mouse_up" )
         self.split_dragging = False
         
     def splitbar_drag( self, event ):
-        log.debug( "SplitFrame.splitbar_drag" )
         if self.split_dragging:
             self.resize_point( event.root_x - self.splitbar_drag_start, event.root_y - self.splitbar_drag_start )
 
@@ -277,8 +259,6 @@ class SplitFrame( Frame ):
     
 
     def remove_me( self, me ):
-        log.debug( "SplitFrame.remove_me call for frame: %s with windows: %s" % ( self, self.windows )  )
-
         if self.frame1 == me:
             replacewith = self.frame2
         else:
@@ -292,7 +272,6 @@ class SplitFrame( Frame ):
         replacewith.moveresize( self.x, self.y, self.width, self.height )
 
     def replace_me( self, me, replacewith ):
-        log.debug( "SplitFrame.replace_me" )
         if self.frame1 == me:
             self.frame1 = replacewith
         elif self.frame2 == me:

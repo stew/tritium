@@ -197,33 +197,27 @@ class TitleClient(object):
                 pass
 
     def title_get_focus(self, event):
-        log.debug( "TitleClient.title_get_focus" )
         self.active = True
         self.title_draw()
 
     def title_lose_focus(self, event):
-        log.debug( "TitleClient.title_lose_focus" )
         self.active = False
         self.title_draw()
 
     def title_remove(self, event):
-        log.debug( "TitleClient.title_remove" )
         self.title_window.unmap()
 
     def title_hide( self ):
-        log.debug( "TitleClient.title_hide" )
 	(x, y, width, height, borderwidth) = self.decoration_window.geometry()
         self.hide_x = x
         self.hide_y = y
         self.decoration_window.move( -(2*self.workspace.screen.root_width), -(2*self.workspace.screen.root_height) )
 
     def title_show( self ):
-        log.debug( "TitleClient.title_show" )
         self.decoration_window.move( self.hide_x,self.hide_y )
 
 
     def _title_create_gcs( self, window ):
-        log.debug( "TitleClient._title_create_gcs" )
         self.title_on_fg_gc = window.create_gc(foreground =
                                          self.wm.current_frame().screen.title_on_fg,
                                          background =
@@ -246,17 +240,14 @@ class TitleClient(object):
 
 
     def activate_client( self ):
-        log.debug( "TitleClient.activate_client" )
 	self.decoration_window.raisewindow()
         self.workspace.raisewindows() # raise the "alwaysontop" windows
         self.wm.current_frame().wm.set_current_client( self )
         
     def destroy( self ):
-        log.debug( "TitleClient.destroy" )
         self.decoration_window.destroy()
 
     def titlebar_mouse_down( self, event ):
-        log.debug( "TitleClient.titlebar_mouse_down" )
         ( x, y, width, height, borderwidth) = self.decoration_window.geometry();
 
 
@@ -276,7 +267,6 @@ class TitleClient(object):
 
 
     def start_move( self, event ):
-        log.debug( "TitleClient.start_move" )
         event.window.grab_pointer( False,
                                    X.ButtonPressMask | X.ButtonReleaseMask | X.PointerMotionMask | X.LeaveWindowMask,
                                    X.GrabModeAsync, X.GrabModeAsync, 0, 0, X.CurrentTime )
@@ -292,8 +282,6 @@ class TitleClient(object):
     # are nearest and anchor the opposite corner instead of always
     # anchoring the top-left
     def start_resize( self, event ):
-        log.debug( "TitleClient.start_resize" )
-
         event.window.grab_pointer( False,
                                    X.ButtonPressMask | X.ButtonReleaseMask | X.PointerMotionMask | X.LeaveWindowMask,
                                    X.GrabModeAsync, X.GrabModeAsync, 0, 0, X.CurrentTime )
@@ -309,7 +297,6 @@ class TitleClient(object):
         self.title_resize_start_y = height - event.root_y
 
     def titlebar_mouse_up( self, event ):
-        log.debug( "TitleClient.titlebar_mouse_up" )
         if self.titlebar_moving:
             self.titlebar_moving = False
             self.wm.display.ungrab_pointer( X.CurrentTime )
@@ -320,7 +307,6 @@ class TitleClient(object):
 #            event.window.send_event( event );
 
     def titlebar_drag( self, event ):
-        log.debug( "TitleClient.titlebar_drag" )
         if self.titlebar_moving:
             self.decoration_window.move( event.root_x - self.tab_drag_start_x ,
                                          event.root_y - self.tab_drag_start_y )
@@ -339,7 +325,6 @@ class TitleClient(object):
                                           width-2, self.screen.title_height )
 
     def set_text(self, text):
-        log.debug( "TitleClient.set_text" )
 	if text == self.title_text:
 	    return
 
@@ -348,7 +333,6 @@ class TitleClient(object):
         self.title_draw()
 
     def title_draw( self ):
-        log.debug( "TitleClient.title_draw" )
 	(x, y, wwidth, height, borderwidth) = self.title_window.geometry()
 	if not self.title_text:
 	    return
@@ -372,11 +356,9 @@ class TitleClient(object):
 	self.title_window.draw_text( fg_gc, x, self.wm.current_frame().screen.title_base, self.title_text )
 
     def title_redraw(self, event):
-        log.debug( "TitleClient.title_redraw" )
         self.title_draw()
 
     def title_undraw(self):
-        log.debug( "TitleClient.title_undraw" )
 	(x, y, width, height, borderwidth) = self.title_window.geometry()
         self.title_window.clear_area( width = width, height = height )
 

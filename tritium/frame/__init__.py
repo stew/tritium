@@ -48,10 +48,7 @@ class FrameClient( object ):
 	try:
 	    transient = window.get_wm_transient_for()
             if transient:
-                log.debug( "TRANSIENT" )
                 self.transient = True
-            else:
-                log.debug( "NOT TRANSIENT" )
 	except:
             traceback.print_exc()
 	    pass
@@ -78,29 +75,23 @@ class FrameClient( object ):
             return True
         
     def frame_unmap( self, event ):
-        log.debug( "frame_unmap" )
         self.frame.remove( self )
 
     def frame_get_focus( self, event ):
-        log.debug( "frame_get_focus" )
-        log.debug( "setting current frame to %s" % self.frame )
         self.wm.workspaces.current().current_frame = self.frame
         self.frame.set_current_window( self )
 
     def add_to_frame( self, frame ):
-        log.debug( "FrameClient.add_to_frame" )
        	self.frame = frame
         frame.append( self )
 
     def move_to_frame( self, new_frame ):
-        log.debug( "FrameClient.move_to_frame" )
         if new_frame and self.frame != new_frame:
             old_workspace = self.frame.workspace()
             new_workspace = new_frame.workspace()
             if new_workspace != old_workspace:
                 old_workspace.deactivate()
                 new_workspace.activate()
-            log.debug( "moving from frame %s to frame %s" % ( self.frame, new_frame ) )
             self.tab_remove()
             self.frame.remove( self )
             self.add_to_frame( new_frame )

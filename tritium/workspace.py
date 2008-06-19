@@ -44,23 +44,18 @@ class WorkspaceWindowManager(object):
             workspace.activate()
 
     def current_frame( self ):
-        log.debug( "WorkspaceWindowManager.current_frame" )
         ws = self.workspaces.current()
         if ws:
             return ws.current_frame
 
     def set_current_frame( self, frame ):
-        log.debug( "tritiumWindowManager.set_current_frame" )
         if frame:
             self.workspaces.current().current_frame = frame
         else:
             log.error( "wtf, set_current_frame got a null frame" )
 
     def set_current_workspace( self, index ):
-        log.debug( "tritiumWindowManager.set_current_workspace: %d" % index )
-        
         if( index != self.workspaces.index and index >= 0 and index < len( self.workspaces ) ):
-            log.debug( "setting current workspace to %d" %index )
             self.workspaces.current().deactivate()
             self.workspaces.index = index
             self.workspaces.current().activate()
@@ -71,7 +66,6 @@ class WorkspaceWindowManager(object):
 
 
     def new_workspace( self, screen, type=TABBED, name="" ):
-        log.debug( "tritiumWindowManager.new_workspace" )
         try:
             (ws,index) = self.workspaceDict[ name ]
         except KeyError:
@@ -98,22 +92,17 @@ class WorkspaceClient(object):
             self.workspace = self.wm.workspaces.current()
 
     def hide( self ):
-        log.debug( "WorkspaceClient.hide: %s" % self )
         if not self.hidden:
             (x, y, width, height, borderwidth) = self.geometry()
-            log.debug( "hiding %s" % self )
             self.hide_x = x
             self.hide_y = y
             new_x = self.screen.root_width+1
             new_y = self.screen.root_height+1
-            log.debug( "moving %s from (%d, %d) to (%d, %d)" % (self.get_title(),x,y,new_x,new_y) )
             self.move( new_x, new_y )
             self.hidden = True
         
     def show( self ):
-        log.debug( "WorkspaceClient.show" )
         if self.hidden:
-            log.debug( "moving %s back to (%d, %d)" % (self.get_title(), self.hide_x, self.hide_y) )
             self.move( self.hide_x,self.hide_y )
             self.hidden = False
         
@@ -147,7 +136,6 @@ class Workspace(object):
 
 
     def next_frame( self ):
-        log.debug( "Workspace.next_frame" )
         self.current_frame.deactivate()
         self.current_frame = self.current_frame.next_frame()
         self.current_frame.activate()
@@ -161,28 +149,23 @@ class Workspace(object):
         return self.frame.first_child_frame()
 
     def find_frame( self, x, y ):
-        log.debug( "Workspace.find_frame" )
         return self.frame.find_frame( x, y )
     
     def visible( self ):
-        log.debug( "Workspace.visible: %s? %d" %(self.name, self.active))
         return self.active
 
     def activate( self ):
-        log.debug( "Workspace.activate" )
         self.active = True
         self.frame.show()
         # TODO this should really be the last current window's frame
         self.frame.topmost_child().activate()
 
     def deactivate( self ):
-        log.debug( "Workspace.deactivate" )
         self.active = False
         self.frame.deactivate()
         self.frame.hide()
 
     def replace_me( self, me, replacewith ):
-        log.debug( "Workspace.replace_me" )
         assert( self.frame == me )
         self.frame = replacewith
         self.frame.tritium_parent = self
@@ -192,12 +175,10 @@ class Workspace(object):
         return "Workspace: " + str( self.name )
             
     def find_frame_right( self, frame ):
-        log.debug( "Workspace.find_frame_right" )
         self.screen.wm.set_current_workspace( self.screen.wm.workspaces.index + 1 )
         return self.screen.wm.current_frame();
 
     def find_frame_left( self, frame ):
-        log.debug( "Workspace.find_frame_left" )
         self.screen.wm.set_current_workspace( self.screen.wm.workspaces.index - 1 )
         return self.screen.wm.current_frame();
 

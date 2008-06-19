@@ -27,17 +27,13 @@ class FloatingFrame( Frame ):
     """
     def place_window(self, window = None):
         "Figure out where the window should be put."
-        log.debug( "FloatingFrame.place_window" )
         pass
 
     def append( self, window ):
-        log.debug( "FloatingFrame.append" )
         window.title_manage()
         Frame.append( self, window )
 
     def remove( self, window ):
-        log.debug( "FloatingFrame.remove" )
-        log.debug( "NOT removing window: %s from frame %s" % (window,self))
         # this is doing nothing becuase during reparenting, we get an
         # unmap event when we are being unmapped from the root window.
         # probably here we should be doing SOMETHING when we get
@@ -46,7 +42,6 @@ class FloatingFrame( Frame ):
         # this is where I am right now, and it should be written down
         
     def show( self ):
-        log.debug( "Frame.show" )
         if not self.shown:
             for window in self.windows:
                 window.title_show()
@@ -54,7 +49,6 @@ class FloatingFrame( Frame ):
             self.shown = True
 
     def hide( self ):
-        log.debug( "Frame.hide" )
         if self.shown:
             for window in self.windows:
                 window.title_hide()

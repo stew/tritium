@@ -51,7 +51,6 @@ class Frame( object ):
             return self.tritium_parent.workspace()
 
     def find_frame( self, x, y ):
-        log.debug( "find_frame" )
         if ( self.x <= x ) and \
            ( self.y <= y ) and \
            ((self.x+self.width) >= x ) and \
@@ -59,7 +58,6 @@ class Frame( object ):
             return self
     
     def append( self, window ):
-        log.debug( "Frame.append" )
         self.place_window( window  )
         if self.visible():
             self.deactivate()
@@ -73,14 +71,10 @@ class Frame( object ):
         window.frame = self
 
     def remove_client_event( self, event ):
-        log.debug( "Frame.remove_client_event" )
         self.remove( event.client )
 
     def remove( self, window ):
-        log.debug( "Frame.remove" )
-        log.debug( "removing window: %s from frame %s with windows: %s" % (window,self,self.windows))
         cur = self.windows.current()
-#        window.dispatch.remove_handler( self.remove_client_event )
 
         try:
             self.windows.remove( window )
@@ -98,21 +92,18 @@ class Frame( object ):
 
     def next( self ):
         "Move to the next window in this pane."
-        log.debug( "Frame.next" )
         self.deactivate()
         self.windows.next()
         self.activate()
 
     def prev( self ):
         "Move to the prev window in this pane."
-        log.debug( "Frame.prev" )
         self.deactivate()
         self.windows.prev()
         self.activate()
 
     def set_current( self, index ):
         "set the current window to index."
-        log.debug( "Frame.set_current" )
         self.deactivate()
         self.windows.index = index
         self.activate()
@@ -121,7 +112,6 @@ class Frame( object ):
         self.windows.set_current( window )
 
     def show( self ):
-        log.debug( "Frame.show" )
         if not self.shown:
             for window in self.windows:
                 window.show()
@@ -136,7 +126,6 @@ class Frame( object ):
 #             self.shown = False
 
     def deactivate(self):
-        log.debug( "deactivate" )
         if self.windows.current() and not self.windows.current().withdrawn:
             #self.windows.current().panes_pointer_pos = self.windows.current().pointer_position()
             if self.wm.current_frame() == self:
@@ -146,11 +135,9 @@ class Frame( object ):
         "Dummy function, reset to _activate after all windows are opened."
 
     def _activate(self):
-        log.debug( "Frame._activate" )
         "Activate whatever is currently self.windows.current()."
         self.wm.current_screen = self.screen
         self.wm.set_current_frame( self )
-        log.debug( "Frame._activate: setting current frame to %s in %s" % ( self, self.wm ) )
 
         if self.windows.current() and not self.windows.current().withdrawn:
             # Will raise window and give focus
@@ -160,7 +147,6 @@ class Frame( object ):
                 #self.windows.current().warppointer(pos[0], pos[1])
 
     def next_frame( self ):
-        log.debug( "Frame.next_frame" )
         if self.tritium_parent:
             return self.tritium_parent.next_sibling_frame( self )
         else:
@@ -168,7 +154,6 @@ class Frame( object ):
 
 
     def first_child_frame( self ):
-        log.debug( "first_child_frame" )
         return self
 
 

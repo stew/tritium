@@ -33,7 +33,6 @@ class TabbedFrame( Frame ):
 
     def append( self, window ):
         Frame.append( self, window )
-        log.debug( "TabbedFrame.append" )
         tab = Tab( self, window )
         window.tab = tab
         self.tabs.append( tab )
@@ -44,7 +43,6 @@ class TabbedFrame( Frame ):
         window.tab_manage()
 
     def moveresize( self, x, y, width, height ):
-        log.debug( "TabbedFrame.moveresize" )
         self.x = x
         self.y = y
         self.height = height
@@ -53,7 +51,6 @@ class TabbedFrame( Frame ):
         self.tabs.resize_tabs();
         
     def show( self ):
-        log.debug( "TabbedFrame.show" )
         Frame.show( self )
         self.tabs.show()
         if not self.shown:
@@ -63,7 +60,6 @@ class TabbedFrame( Frame ):
             self.shown = True
 
     def hide( self ):
-        log.debug( "TabbedFrame.hide" )
         Frame.hide( self )
         self.tabs.hide()
         if self.shown:
@@ -78,14 +74,11 @@ class TabbedFrame( Frame ):
         """
         Figure out where the window should be put.
         """
-        log.debug( "TabbedFrame.place_window: %s " % window.get_title() )
         if not window: window = self.windows.current()
 
         if( window.transient ):
 #            width, height = window.follow_size_hints(self.width - 2, self.height - 2)
             width, height = window.width, window.height
-
-            log.debug( "transient window: (W x H): %d, %d ; my ( W x H ): %d, %d" % (width,height,self.width,self.height ) )
 
             if not window.gravity:
                 window.gravity = X.SouthGravity
@@ -118,7 +111,6 @@ class TabbedFrame( Frame ):
 
             window.moveresize( x, y, width, height )
 #            window.frameProxy = FrameProxy( self.screen, window )
-            log.debug( "placing transient window: (W x H): %d, %d ; (x,y: %d, %d" % (width,height,x,y ) )
         else:
             window.moveresize( self.x, self.y + self.screen.title_height, self.width-2, self.height-self.screen.title_height-2)
 
@@ -128,15 +120,12 @@ class TabbedFrame( Frame ):
             window.hide()
 
     def split_vertically( self ):
-        log.debug( "TabbedFrame.split_vertically" )
         SplitFrame( self.screen, self.x, self.y, self.width, self.height, True, self )
 
     def split_horizontally( self ):
-        log.debug( "TabbedFrame.split_horizontally" )
         SplitFrame( self.screen, self.x, self.y, self.width, self.height, False, self )
 
     def remove_split( self ):
-        log.debug( "TabbedFrame.remove_split" )
         if self.tritium_parent:
             self.tritium_parent.remove_me( self )
             self.tabs.remove_all()
@@ -145,13 +134,11 @@ class TabbedFrame( Frame ):
     def next( self ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
-        log.debug( "TabbedFrame.next" )
         self.tabs.next()
 
     def prev( self ):
         "Move to the next window in this pane."
         #clients = self.screen.query_clients(panefilter(self), 1)
-        log.debug( "TabbedFrame.prev" )
         self.tabs.prev()
 
 def _test():

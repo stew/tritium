@@ -39,9 +39,7 @@ class SubMap(keys.KeyGrabKeyboard):
 	
 	# First check for an exact modifier match
 	match = keys.hash_keycode(event.detail, event.state)
-        log.debug( "haskey?" )
 	if self.bindings.has_key(match):
-            log.debug( "haskey" )
 	    self.bindings[match](event)
 
 	# else, check for an AnyModifier key
