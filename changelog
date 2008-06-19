@@ -1,6 +1,9 @@
 tritium (0.3.8)
 
+  * get rid of lots of useless debugging
+debugging
   * add wm.restart() using execvp to restart tritium (Thanks Clint)
+  * handle ConfigureNotify for dockapps
 
  -- Mike O'Connor <stew@debian.org>  Wed, Jun 18 2008 10:04:48 -0400
 

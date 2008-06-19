@@ -110,7 +110,6 @@ class TabbedFrame( Frame ):
                 y = self.y + self.screen.title_height + self.height - height - 1
 
             window.moveresize( x, y, width, height )
-#            window.frameProxy = FrameProxy( self.screen, window )
         else:
             window.moveresize( self.x, self.y + self.screen.title_height, self.width-2, self.height-self.screen.title_height-2)
 

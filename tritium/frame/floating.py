@@ -40,6 +40,7 @@ class FloatingFrame( Frame ):
         # ummapped from the decorator window though.  (but that
         # belongs in title.py, not here, i'm writing it here, becuase
         # this is where I am right now, and it should be written down
+	pass
         
     def show( self ):
         if not self.shown:

@@ -210,7 +210,6 @@ class Tab(object):
         pre:
             not self._deleted
         """
-        log.debug( "Tab.hide" )
         self.window.unmap();
 
     def show( self ):

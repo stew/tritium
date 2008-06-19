@@ -119,11 +119,11 @@ class Frame( object ):
             self.shown = True
 
     def hide( self ):
-        log.debug( "Frame.hide" )
 #         if self.shown:
 #             for window in self.windows:
 #                 window.hide()
 #             self.shown = False
+        pass
 
     def deactivate(self):
         if self.windows.current() and not self.windows.current().withdrawn:
@@ -152,10 +152,8 @@ class Frame( object ):
         else:
             return self
 
-
     def first_child_frame( self ):
         return self
-
 
     def identity( self ):
         return self

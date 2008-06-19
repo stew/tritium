@@ -27,7 +27,7 @@ LEFT = 'left'
 RIGHT = 'right'
 
 class DockScreen(object):
-    def __screen_init__( self ):
+    def __screen_client_init__( self ):
         self.dock_windows = []
         self.dock_size = 0
 
@@ -36,7 +36,7 @@ class DockScreen(object):
         self.dock_x, self.dock_y, self.dock_width, self.dock_height = self.alloc_border( where, size )
 
     def add_dock_window( self, client ):
-        dock_windows.append( client )
+        self.dock_windows.append( client )
 
 # Client mixin
 class DockClient(object):
@@ -47,15 +47,23 @@ class DockClient(object):
     
     def __client_init__(self):
         log.debug( "DockClient.__client_init__" )
-
-        self.dockapp = False
 #         if( self.screen.dock_where ):
 #             # is this client a dockapp?
 #             wmh = self.window.get_wm_hints()
 #             if wmh and wmh.flags & Xutil.IconWindowHint:
-#                 self.dockapp = True
-#                 self.on_top = True
 #                 self.dock_manage()
     
     def dock_manage( self ):
+        self.on_top = True
+        self.dockapp = True
+        self.screen.add_dock_window( self )
+
+        self.dispatch.add_handler( X.ConfigureRequest, self.dock_configure ) 
+
+        log.debug( "moving dock window to (%d,%d)" % ( self.screen.dock_x, self.screen.dock_y ) )
         self.move( self.screen.dock_x, self.screen.dock_y )
+
+    def dock_configure( self, event ):
+        log.debug( "moving dock window to (%d,%d) becuase of ConfigureRequest" % ( self.screen.dock_x, self.screen.dock_y ) )
+        self.move( self.screen.dock_x, self.screen.dock_y )
+        

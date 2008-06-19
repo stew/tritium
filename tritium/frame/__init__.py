@@ -30,6 +30,7 @@ class FrameWindowManager( object ):
         frame = client.screen.layout.which_frame( client )
         if frame:
             return frame
+
         return self.current_frame()
     
 
@@ -59,6 +60,7 @@ class FrameClient( object ):
         log.debug( "FrameClient.__client_init__" )
         frame = self.wm.find_me_a_home( self )
         if self.dockapp:
+            log.debug( "that frame is a dockapp!" )
             self.frame = None
             self.dock_manage()
         else:
