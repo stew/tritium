@@ -5,6 +5,8 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
 * restart
   if there was a way to restart tritium (reread config, (redo
   layout?)) it would often be helpful
+  ** ok, now we have wm.restart(), however its not ideal since it will
+     move windows around on you
 
 * Add completion to query.py
   for instance, runCommand should show completions from expanding
@@ -21,7 +23,7 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
     *** make a "floating frame" tab in the tab bar which contains all the floating windows
     *** make a "floating workspace" containing nothing but the floating frame
 
-* Need to move the fonts / colors to .Xresources
+* should move the fonts / colors to .Xresources
 
 * Dragging tabs to other workspaces
   When you start dragging a tab, the hit a key to switch to another
@@ -46,8 +48,6 @@ note: MORE_TODO_ITEMS=$(grep -r TODO *)
 * find application by name
   ** I need to be able to hit 'C-j e' to switch to emacs or launch one if its not running
   ** plpwm in the plwm examples has such a function  
-
-* {next,prev}-workspace
 
 * dock on one workspace only
   ** might not be an insignificant change, since right now we are
