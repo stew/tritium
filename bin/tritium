@@ -45,13 +45,13 @@ class TritiumMenuHandler(menu.MenuCharHandler):
     Any_space = Any_Down = C_n = menu.MenuKeyHandler._down
     Any_BackSpace = Any_Up = C_p = menu.MenuKeyHandler._up
 
-class TritiumClient( tritium.dock.DockClient,
+class TritiumClient( wmanager.Client,
                      tritium.frame.FrameClient,
                      tritium.frame.tab.TabClient,
-                     wmanager.Client,
 		     workspace.WorkspaceClient,
 		     border.BorderClient,
 		     tritium.frame.title.TitleClient,
+                     tritium.dock.DockClient,
                      ):
     "Put the clients in a frame, with a border."
     border_default_width = 1
@@ -155,11 +155,17 @@ if __name__ == '__main__':
     # right now all we understand is -d for debug
     if len( sys.argv ) > 1:
         if( len( sys.argv ) == 2 ):
-            if sys.argv.pop() == '-d':
+            o = sys.argv.pop() 
+            if o == '-d':
                 import contract
                 contract.checkmod(tab)
                 level=logging.DEBUG
-#                wmanager.debug = wmanager.do_debug
+
+            elif o == '-dd':
+                import contract
+                contract.checkmod(tab)
+                level=logging.DEBUG
+                wmanager.debug = wmanager.do_debug
             else:
                 usage()
         else:
