@@ -1,5 +1,5 @@
 .\"-*- nroff -*-
-.TH TRITIUM 1 "June  1, 2007"
+.TH TRITIUM 1 "Feb. 16, 2011"
 .SH NAME
 tritium \- a tabbed/tiling window manager for the X Window System
 .SH SYNOPSIS
@@ -9,9 +9,81 @@ tritium \- a tabbed/tiling window manager for the X Window System
 .B tritium
 is a tabbed / tiling window manager geared towards keyboard users.
 .SH OPTIONS
-.B \-c, \-\config-file filename
-use
-.RI filename
-as the tritium config file.
+.TP
+.I \-c configdir
+use configdir as the tritium configuration directory.  If this is not specified, the default directory
+.I ~/.tritium
+will be used.
+.SH KEYBOARD CONTROL
+.P
+.B F1
+gives a prompt to search for a man page.
+.P
+.B F2
+will call your default terminal
+.P
+.B F3
+will open command prompt.
+.P
+.B Ctrl-F3
+gives a python shell prompt (like the in idle).
+.P
+.B Shift+F3
+will run a command in a terminal.
+.P
+.B F4
+will open an ssh prompt to ssh to another machine.
+.P
+.B Shift+F9
+creates a new workspace.
+.P
+.B F12
+opens a program menu, much like dmenu in dwm or wmii.
+.P
+.B Mod4
+is the "Super" modifier, which on many machines will be the "Window Key".
+.P
+.B Mod4+J
+to the next workspace, Mod4+K back a workspace.
+.P
+.B Mod4+Tab
+changes focus between columns.
+.P
+.B Mod4+L
+and 
+.B Mod4+H
+move back and forth between windows or frames in a column.
+.P
+.B Mod4+F(number)
+allows one to navigate between workspaces (ie. 
+.B Mod4+F3
+navigates to the third workspace).
+.P
+.B Mod4+W
+will close a program.
+.P
+.B Mod4+S
+slits a column horizontally
+.P
+.B Mod4+Shift+S
+splits it vertically.
+.P
+.B Mod4+(arrow key)
+will move the split between frames, thus resizing
+them. (ie. Mod4+(right arrow) will squeeze the column to the right
+over, and makes the left column larger, etc.).
+.P
+.B Mod4+G
+and
+.B  Win+;
+will navigate back and forth between columns, and
+across workspaces (as opposed to Mod4+Tab, which only changes focus
+between columns in the same workspace).
+.P
+.B Mod4-Shift+J
+moves a window to the frame below, Mod4-Shift+K moves a
+the frame above.  Mod4+Shift+L moves the windows to the frame to the
+right. Mod4-Shift+H moves it to the left.
+
 .SH AUTHOR
 tritium was written by Mike O'Connor <stew@vireo.org>
