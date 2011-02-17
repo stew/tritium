@@ -149,7 +149,8 @@ class Tritium( wmanager.WindowManager,
         os.execvp( executable, sys.argv[1:] )
 
 if __name__ == '__main__':
-    os.environ[ "DISPLAY" ] = ":0"
+    if not os.environ.has_key( "DISPLAY" ):
+        os.environ[ "DISPLAY" ] = ":0"
 
     level=logging.INFO
     # right now all we understand is -d for debug
